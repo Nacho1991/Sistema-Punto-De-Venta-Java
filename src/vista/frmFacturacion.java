@@ -303,8 +303,6 @@ public class frmFacturacion extends javax.swing.JFrame {
 
         txtDireccion.setEditable(false);
 
-        txtNombre.setEditable(false);
-
         txtTelefono.setEditable(false);
 
         cmbTipoCliente.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Contado", "Crédito" }));
@@ -530,6 +528,11 @@ public class frmFacturacion extends javax.swing.JFrame {
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         tbrOpciones.add(jButton1);
 
         jSeparator10.setBackground(new java.awt.Color(0, 0, 0));
@@ -856,6 +859,12 @@ public class frmFacturacion extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnVerFacturasPendientesActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        frmBuscarCliente oSearch = new frmBuscarCliente(this, rootPaneCheckingEnabled,cnx);
+        oSearch.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscarProductos;

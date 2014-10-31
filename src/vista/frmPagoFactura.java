@@ -165,9 +165,10 @@ public class frmPagoFactura extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        pnlBackground.setBackground(new java.awt.Color(0, 153, 153));
+        pnlBackground.setBackground(new java.awt.Color(124, 119, 119));
 
-        brtleBarraTitulo.setBackground(new java.awt.Color(0, 0, 0));
+        brtleBarraTitulo.setBackground(new java.awt.Color(254, 254, 254));
+        brtleBarraTitulo.setForeground(new java.awt.Color(254, 254, 254));
         brtleBarraTitulo.setTitulo("Cancelar factura");
         pnlBackground.add(brtleBarraTitulo, java.awt.BorderLayout.PAGE_START);
 
@@ -188,9 +189,11 @@ public class frmPagoFactura extends javax.swing.JDialog {
         });
 
         lblTotalArticulos.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblTotalArticulos.setForeground(new java.awt.Color(254, 254, 254));
         lblTotalArticulos.setText("Total de articulos:");
 
         lblNumeroArticulos.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblNumeroArticulos.setForeground(new java.awt.Color(254, 254, 254));
         lblNumeroArticulos.setText("0");
 
         btnBuscarCliente.setText("Buscar cliente");
@@ -246,7 +249,7 @@ public class frmPagoFactura extends javax.swing.JDialog {
 
         pnlBackground.add(pnlOpciones, java.awt.BorderLayout.LINE_END);
 
-        tabCancelarFactura.setBackground(new java.awt.Color(0, 153, 153));
+        tabCancelarFactura.setBackground(new java.awt.Color(207, 240, 240));
         tabCancelarFactura.setColorDeBorde(new java.awt.Color(0, 0, 0));
         tabCancelarFactura.setColorDeSegundoBorde(new java.awt.Color(255, 204, 0));
         tabCancelarFactura.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -256,15 +259,19 @@ public class frmPagoFactura extends javax.swing.JDialog {
         });
 
         lblTotalPagar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblTotalPagar.setForeground(new java.awt.Color(254, 254, 254));
         lblTotalPagar.setText("Total a pagar:");
 
         lblMontoPagarContado.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        lblMontoPagarContado.setForeground(new java.awt.Color(254, 254, 254));
         lblMontoPagarContado.setText("0");
 
         lblPagoCon.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblPagoCon.setForeground(new java.awt.Color(254, 254, 254));
         lblPagoCon.setText("Pagó con:");
 
         lblSuCambio.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblSuCambio.setForeground(new java.awt.Color(254, 254, 254));
         lblSuCambio.setText("Su cambio:");
 
         numPagonCon.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -275,6 +282,7 @@ public class frmPagoFactura extends javax.swing.JDialog {
         });
 
         lblCambio.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        lblCambio.setForeground(new java.awt.Color(254, 254, 254));
         lblCambio.setText("0");
 
         txtNumeroFacturaContado.setEditable(false);
@@ -283,9 +291,11 @@ public class frmPagoFactura extends javax.swing.JDialog {
         txtNumeroFacturaContado.setText("0");
 
         lblNumeroFacturaContado.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblNumeroFacturaContado.setForeground(new java.awt.Color(254, 254, 254));
         lblNumeroFacturaContado.setText("No. Factura:");
 
         lblDescuento.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblDescuento.setForeground(new java.awt.Color(254, 254, 254));
         lblDescuento.setText("Descuento:");
 
         numDescuento.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -296,6 +306,7 @@ public class frmPagoFactura extends javax.swing.JDialog {
         });
 
         jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(254, 254, 254));
         jLabel1.setText("%");
 
         javax.swing.GroupLayout pnlContadoLayout = new javax.swing.GroupLayout(pnlContado);
@@ -355,9 +366,11 @@ public class frmPagoFactura extends javax.swing.JDialog {
         tabCancelarFactura.addTab("Contado", pnlContado);
 
         lblMontoPagarCredito.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        lblMontoPagarCredito.setText("₡0");
+        lblMontoPagarCredito.setForeground(new java.awt.Color(254, 254, 254));
+        lblMontoPagarCredito.setText("0");
 
         lblTotalPagarCredito.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblTotalPagarCredito.setForeground(new java.awt.Color(254, 254, 254));
         lblTotalPagarCredito.setText("Total a pagar:");
 
         txtNumeroFacturaCredito.setEditable(false);
@@ -366,14 +379,17 @@ public class frmPagoFactura extends javax.swing.JDialog {
         txtNumeroFacturaCredito.setText("0");
 
         lblNumeroFacturaCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblNumeroFacturaCredito.setForeground(new java.awt.Color(254, 254, 254));
         lblNumeroFacturaCredito.setText("No. Factura:");
 
         lblNombreClienteCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblNombreClienteCredito.setForeground(new java.awt.Color(254, 254, 254));
         lblNombreClienteCredito.setText("Nombre:");
 
         txtNombreClienteCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
         lblCedulaClienteCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblCedulaClienteCredito.setForeground(new java.awt.Color(254, 254, 254));
         lblCedulaClienteCredito.setText("Cédula:");
 
         txtCedulaClienteCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -384,6 +400,7 @@ public class frmPagoFactura extends javax.swing.JDialog {
         txtLimiteCreditoCliente.setCaretPosition(0);
 
         lblLimiteCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblLimiteCredito.setForeground(new java.awt.Color(254, 254, 254));
         lblLimiteCredito.setText("Límite de crédito:");
 
         txtSaldoActualCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -391,6 +408,7 @@ public class frmPagoFactura extends javax.swing.JDialog {
         txtSaldoActualCredito.setText("0");
 
         lblSaldoActual.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblSaldoActual.setForeground(new java.awt.Color(254, 254, 254));
         lblSaldoActual.setText("Saldo actual:");
 
         javax.swing.GroupLayout pnlCreditoLayout = new javax.swing.GroupLayout(pnlCredito);
@@ -452,10 +470,12 @@ public class frmPagoFactura extends javax.swing.JDialog {
         tabCancelarFactura.addTab("Crédito", pnlCredito);
 
         lblTotaPagarTarjeta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblTotaPagarTarjeta.setForeground(new java.awt.Color(254, 254, 254));
         lblTotaPagarTarjeta.setText("Total a pagar:");
 
         lblMontoPagarTarjeta.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        lblMontoPagarTarjeta.setText("₡0");
+        lblMontoPagarTarjeta.setForeground(new java.awt.Color(254, 254, 254));
+        lblMontoPagarTarjeta.setText("0");
 
         javax.swing.GroupLayout panelShadow1Layout = new javax.swing.GroupLayout(panelShadow1);
         panelShadow1.setLayout(panelShadow1Layout);

@@ -728,8 +728,9 @@ public class frmPrincipal extends javax.swing.JFrame {
 
     private void lblEditarProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblEditarProductosMouseClicked
         // TODO add your handling code here:
-        frmEditarProductos oEdit = new frmEditarProductos(this, rootPaneCheckingEnabled, cnx);
+        frmEditarProducto oEdit = new frmEditarProducto(this, rootPaneCheckingEnabled, cnx);
         oEdit.setVisible(true);
+        
     }//GEN-LAST:event_lblEditarProductosMouseClicked
 
     private void lblControlGeneralProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblControlGeneralProductosMouseClicked

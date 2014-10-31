@@ -217,9 +217,6 @@
                       </Properties>
                     </Component>
                     <Component class="org.edisoncor.gui.textField.TextField" name="txtNombre">
-                      <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
-                      </Properties>
                     </Component>
                     <Component class="org.edisoncor.gui.textField.TextField" name="txtTelefono">
                       <Properties>
@@ -500,6 +497,9 @@
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JToolBar$Separator" name="jSeparator10">
                   <Properties>

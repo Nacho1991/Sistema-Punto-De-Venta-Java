@@ -7,7 +7,6 @@ package vista;
 
 import accesoDatos.AccesoDatosMySql;
 import accesoDatos.InventarioD;
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -15,6 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import logica.Inventario;
 import org.edisoncor.gui.util.WindowDragger;
@@ -47,6 +49,82 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
             }
         });
         setLocationRelativeTo(null);
+        setJTexFieldChanged(txtFiltroBusqueda);
+    }
+    //Metodo para el evnto de cambio
+    private void setJTexFieldChanged(JTextField txt) {
+        DocumentListener documentListener = new DocumentListener() {
+
+            @Override
+            public void changedUpdate(DocumentEvent documentEvent) {
+                printIt(documentEvent);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent documentEvent) {
+                printIt(documentEvent);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent documentEvent) {
+                printIt(documentEvent);
+            }
+        };
+        txt.getDocument().addDocumentListener(documentListener);
+    }
+        //Metodo que permite mostrar los datos que se ingresan al TextBox
+    private void printIt(DocumentEvent documentEvent) {
+        DocumentEvent.EventType type = documentEvent.getType();
+        if (type.equals(DocumentEvent.EventType.CHANGE)) {
+
+        } else if (type.equals(DocumentEvent.EventType.INSERT)) {
+            txtEjemploJTextFieldChanged();
+        } else if (type.equals(DocumentEvent.EventType.REMOVE)) {
+            txtEjemploJTextFieldChanged();
+        }
+    }
+
+    //Envocamos el evento de cambio de texto
+    private void txtEjemploJTextFieldChanged() {
+        String opcion = cmbOpcionesBusqueda.getSelectedItem().toString();
+        switch (opcion) {
+            case "Código":
+                opcion = "Id_Producto";
+                mostrarFiltro(txtFiltroBusqueda.getText(), opcion);
+                break;
+            case "Descripción":
+                opcion = "Descripcion";
+                mostrarFiltro(txtFiltroBusqueda.getText(), opcion);
+                break;
+            case "Marca":
+                opcion = "Marca";
+                mostrarFiltro(txtFiltroBusqueda.getText(), opcion);
+                break;
+        }
+    }
+    private void mostrarFiltro(String pFiltro, String pOpcion) {
+        ArrayList registros = (ArrayList) oInventarioD.filtrarInventario(pFiltro, pOpcion);
+        if (oInventarioD.isError()) {
+            JOptionPane.showMessageDialog(null,
+                    "Error consultando a la base de datos, detalle técnico:" + oInventarioD.getErrorMsg());
+        } else {
+            this.datos = new String[registros.size()][9];
+            for (int i = 0; i < registros.size(); i++) {
+                Inventario aux = (Inventario) registros.get(i);
+                this.datos[i][0] = aux.getCodProducto();
+                this.datos[i][1] = aux.getNombre();
+                this.datos[i][2] = aux.getMarca();
+                this.datos[i][3] = aux.getDescripcion();
+                this.datos[i][4] = String.valueOf(aux.getPrecioCompra());
+                this.datos[i][5] = String.valueOf(aux.getPrecioVenta());
+                this.datos[i][6] = aux.getExistencia();
+                this.datos[i][7] = String.valueOf(aux.getCantidad());
+                this.datos[i][8] = aux.getFechaEntrada();
+
+            }
+            this.modelo.setDataVector(datos, cabeceras);
+            this.tbleRegsitros.setModel(modelo);
+        }
     }
     private DefaultTableModel modelo = new DefaultTableModel() {
         @Override
@@ -103,15 +181,15 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
         tleBarraTitulo = new org.edisoncor.gui.varios.TitleBar();
         panelShadow1 = new org.edisoncor.gui.panel.PanelShadow();
         pnlDatos = new org.edisoncor.gui.panel.Panel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
+        lblCodProducto = new javax.swing.JLabel();
+        lblNombre = new javax.swing.JLabel();
+        lblMarca = new javax.swing.JLabel();
+        lblDescripcion = new javax.swing.JLabel();
+        lblPrecioCompra = new javax.swing.JLabel();
+        lblPrecioVenta = new javax.swing.JLabel();
+        lblCantidad = new javax.swing.JLabel();
+        lblPorcentaje = new javax.swing.JLabel();
+        lblExistencia = new javax.swing.JLabel();
         txtCodProducto = new org.edisoncor.gui.textField.TextField();
         txtNombre = new org.edisoncor.gui.textField.TextField();
         txtMarca = new org.edisoncor.gui.textField.TextField();
@@ -120,26 +198,26 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
         numPrecioVenta = new javax.swing.JSpinner();
         numCantidad = new javax.swing.JSpinner();
         numPorcentaje = new javax.swing.JSpinner();
-        jLabel10 = new javax.swing.JLabel();
+        lblSignoPorcentaje = new javax.swing.JLabel();
         chkExistencia = new javax.swing.JCheckBox();
         btnRegistrar = new org.edisoncor.gui.button.ButtonAction();
         btnCancelar = new org.edisoncor.gui.button.ButtonAction();
-        panelRect1 = new org.edisoncor.gui.panel.PanelRect();
+        pnlCntenedorTabla = new org.edisoncor.gui.panel.PanelRect();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbleRegsitros = new javax.swing.JTable();
-        panel1 = new java.awt.Panel();
-        jToolBar1 = new javax.swing.JToolBar();
+        pnlOpciones = new java.awt.Panel();
+        jtbOpciones = new javax.swing.JToolBar();
         btnModificar = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
+        sptUno = new javax.swing.JToolBar.Separator();
         btnEliminar = new javax.swing.JButton();
-        jSeparator2 = new javax.swing.JToolBar.Separator();
+        sptDos = new javax.swing.JToolBar.Separator();
         btnActualizar = new javax.swing.JButton();
-        jSeparator3 = new javax.swing.JToolBar.Separator();
+        sptTres = new javax.swing.JToolBar.Separator();
         lblBuscarProducto = new javax.swing.JLabel();
-        txtBuscarProducto = new javax.swing.JTextField();
-        jSeparator4 = new javax.swing.JToolBar.Separator();
+        txtFiltroBusqueda = new javax.swing.JTextField();
+        sptCuatro = new javax.swing.JToolBar.Separator();
         lblOpcionesBusqueda = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        cmbOpcionesBusqueda = new javax.swing.JComboBox();
 
         subActualizar.setText("Actualizar");
         subActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -168,7 +246,9 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        tleBarraTitulo.setTitulo("Ventana principal");
+        pnlBackground.setBackground(new java.awt.Color(138, 138, 138));
+
+        tleBarraTitulo.setTitulo("Agregar producto");
         pnlBackground.add(tleBarraTitulo, java.awt.BorderLayout.PAGE_START);
 
         pnlDatos.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos"));
@@ -176,25 +256,39 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
         pnlDatos.setColorPrimario(new java.awt.Color(153, 153, 153));
         pnlDatos.setColorSecundario(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setText("Código del producto:");
+        lblCodProducto.setText("Código del producto:");
 
-        jLabel2.setText("Nombre:");
+        lblNombre.setText("Nombre:");
 
-        jLabel3.setText("Marca:");
+        lblMarca.setText("Marca:");
 
-        jLabel4.setText("Descripción:");
+        lblDescripcion.setText("Descripción:");
 
-        jLabel5.setText("Precio de compra:");
+        lblPrecioCompra.setText("Precio de compra:");
 
-        jLabel6.setText("Precio de venta:");
+        lblPrecioVenta.setText("Precio de venta:");
 
-        jLabel7.setText("Cantidad:");
+        lblCantidad.setText("Cantidad:");
 
-        jLabel8.setText("Porcentaje:");
+        lblPorcentaje.setText("Porcentaje:");
 
-        jLabel9.setText("Existencia:");
+        lblExistencia.setText("Existencia:");
 
-        jLabel10.setText("%");
+        numPrecioCompra.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                numPrecioCompraStateChanged(evt);
+            }
+        });
+
+        numPrecioVenta.setEnabled(false);
+
+        numPorcentaje.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                numPorcentajeStateChanged(evt);
+            }
+        });
+
+        lblSignoPorcentaje.setText("%");
 
         btnRegistrar.setText("Registrar");
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
@@ -214,10 +308,10 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
                 .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlDatosLayout.createSequentialGroup()
                         .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(lblCodProducto)
+                            .addComponent(lblNombre, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblMarca, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblDescripcion, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtCodProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
@@ -227,9 +321,9 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
                     .addGroup(pnlDatosLayout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel7))
+                            .addComponent(lblPrecioVenta)
+                            .addComponent(lblPrecioCompra)
+                            .addComponent(lblCantidad))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(numPrecioVenta, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
@@ -238,15 +332,15 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pnlDatosLayout.createSequentialGroup()
-                                .addComponent(jLabel9)
+                                .addComponent(lblExistencia)
                                 .addGap(18, 18, 18)
                                 .addComponent(chkExistencia))
                             .addGroup(pnlDatosLayout.createSequentialGroup()
-                                .addComponent(jLabel8)
+                                .addComponent(lblPorcentaje)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(numPorcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel10)))))
+                                .addComponent(lblSignoPorcentaje)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnRegistrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -260,7 +354,7 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
                     .addGroup(pnlDatosLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
+                            .addComponent(lblCodProducto)
                             .addComponent(txtCodProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -269,32 +363,32 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
                     .addGroup(pnlDatosLayout.createSequentialGroup()
                         .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
+                            .addComponent(lblNombre))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtMarca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))))
+                            .addComponent(lblMarca))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
+                    .addComponent(lblDescripcion))
                 .addGap(12, 12, 12)
                 .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(numPrecioCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
+                    .addComponent(lblPrecioCompra))
                 .addGap(10, 10, 10)
                 .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(numPrecioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel8)
+                    .addComponent(lblPrecioVenta)
+                    .addComponent(lblPorcentaje)
                     .addComponent(numPorcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10))
+                    .addComponent(lblSignoPorcentaje))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(numCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel7)
-                        .addComponent(jLabel9))
+                        .addComponent(lblCantidad)
+                        .addComponent(lblExistencia))
                     .addComponent(chkExistencia))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -302,25 +396,25 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
         tbleRegsitros.setComponentPopupMenu(menuClickDerecho);
         jScrollPane1.setViewportView(tbleRegsitros);
 
-        javax.swing.GroupLayout panelRect1Layout = new javax.swing.GroupLayout(panelRect1);
-        panelRect1.setLayout(panelRect1Layout);
-        panelRect1Layout.setHorizontalGroup(
-            panelRect1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelRect1Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlCntenedorTablaLayout = new javax.swing.GroupLayout(pnlCntenedorTabla);
+        pnlCntenedorTabla.setLayout(pnlCntenedorTablaLayout);
+        pnlCntenedorTablaLayout.setHorizontalGroup(
+            pnlCntenedorTablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlCntenedorTablaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1)
                 .addContainerGap())
         );
-        panelRect1Layout.setVerticalGroup(
-            panelRect1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelRect1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
+        pnlCntenedorTablaLayout.setVerticalGroup(
+            pnlCntenedorTablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlCntenedorTablaLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
+        jtbOpciones.setFloatable(false);
+        jtbOpciones.setRollover(true);
 
         btnModificar.setText("Modificar");
         btnModificar.setFocusable(false);
@@ -331,8 +425,8 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
                 btnModificarActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnModificar);
-        jToolBar1.add(jSeparator1);
+        jtbOpciones.add(btnModificar);
+        jtbOpciones.add(sptUno);
 
         btnEliminar.setText("Eliminar");
         btnEliminar.setFocusable(false);
@@ -343,8 +437,8 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
                 btnEliminarActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnEliminar);
-        jToolBar1.add(jSeparator2);
+        jtbOpciones.add(btnEliminar);
+        jtbOpciones.add(sptDos);
 
         btnActualizar.setText("Actualizar");
         btnActualizar.setFocusable(false);
@@ -355,48 +449,49 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
                 btnActualizarActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnActualizar);
-        jToolBar1.add(jSeparator3);
+        jtbOpciones.add(btnActualizar);
+        jtbOpciones.add(sptTres);
 
         lblBuscarProducto.setText("Buscar producto:");
-        jToolBar1.add(lblBuscarProducto);
+        jtbOpciones.add(lblBuscarProducto);
 
-        txtBuscarProducto.setText("Escriba aquí el dato para filtrar");
-        txtBuscarProducto.setName(""); // NOI18N
-        txtBuscarProducto.addMouseListener(new java.awt.event.MouseAdapter() {
+        txtFiltroBusqueda.setName(""); // NOI18N
+        txtFiltroBusqueda.setPreferredSize(new java.awt.Dimension(150, 27));
+        txtFiltroBusqueda.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txtBuscarProductoMouseClicked(evt);
+                txtFiltroBusquedaMouseClicked(evt);
             }
         });
-        txtBuscarProducto.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
+        txtFiltroBusqueda.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
             public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
-                txtBuscarProductoVetoableChange(evt);
+                txtFiltroBusquedaVetoableChange(evt);
             }
         });
-        jToolBar1.add(txtBuscarProducto);
-        jToolBar1.add(jSeparator4);
+        jtbOpciones.add(txtFiltroBusqueda);
+        jtbOpciones.add(sptCuatro);
 
         lblOpcionesBusqueda.setText("Opciones de búsqueda:");
-        jToolBar1.add(lblOpcionesBusqueda);
+        jtbOpciones.add(lblOpcionesBusqueda);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Código", "Descripción", "Marca" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        cmbOpcionesBusqueda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Código", "Descripción", "Marca" }));
+        cmbOpcionesBusqueda.setPreferredSize(new java.awt.Dimension(150, 27));
+        cmbOpcionesBusqueda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                cmbOpcionesBusquedaActionPerformed(evt);
             }
         });
-        jToolBar1.add(jComboBox1);
+        jtbOpciones.add(cmbOpcionesBusqueda);
 
-        javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
-        panel1.setLayout(panel1Layout);
-        panel1Layout.setHorizontalGroup(
-            panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+        javax.swing.GroupLayout pnlOpcionesLayout = new javax.swing.GroupLayout(pnlOpciones);
+        pnlOpciones.setLayout(pnlOpcionesLayout);
+        pnlOpcionesLayout.setHorizontalGroup(
+            pnlOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jtbOpciones, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
         );
-        panel1Layout.setVerticalGroup(
-            panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel1Layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        pnlOpcionesLayout.setVerticalGroup(
+            pnlOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlOpcionesLayout.createSequentialGroup()
+                .addComponent(jtbOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -405,17 +500,17 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
         panelShadow1Layout.setHorizontalGroup(
             panelShadow1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pnlDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(panelRect1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlCntenedorTabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlOpciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         panelShadow1Layout.setVerticalGroup(
             panelShadow1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelShadow1Layout.createSequentialGroup()
                 .addComponent(pnlDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(panelRect1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlCntenedorTabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3))
         );
 
@@ -425,11 +520,11 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
         );
 
         pack();
@@ -441,7 +536,7 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
             int fila = this.tbleRegsitros.getSelectedRow();
             if (fila >= 0) {
                 String pCedulaAnterior = this.datos[fila][0];
-                frmEditarProductos oEdit = new frmEditarProductos(null, true, datos[fila][0].toString(), datos[fila][1].toString(), datos[fila][2].toString(), datos[fila][3].toString(), Double.parseDouble(datos[fila][4].toString()), Double.parseDouble(datos[fila][5].toString()), Boolean.parseBoolean(datos[fila][6].toString()), Integer.parseInt(datos[fila][7].toString()));
+                frmEditarProducto oEdit = new frmEditarProducto(null, rootPaneCheckingEnabled, cnx, datos[fila][0].toString(), datos[fila][1].toString(), datos[fila][2].toString(), datos[fila][3].toString(), Double.parseDouble(datos[fila][4].toString()), Double.parseDouble(datos[fila][5].toString()), Boolean.parseBoolean(datos[fila][6].toString()), Integer.parseInt(datos[fila][7].toString()));
                 oEdit.setVisible(true);
                 if (oEdit.isAceptar()) {
                     date = new Date();
@@ -515,18 +610,18 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
         refrescar();
     }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void txtBuscarProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBuscarProductoMouseClicked
+    private void txtFiltroBusquedaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtFiltroBusquedaMouseClicked
         // TODO add your handling code here:
-        txtBuscarProducto.setEditable(true);
-    }//GEN-LAST:event_txtBuscarProductoMouseClicked
+        txtFiltroBusqueda.setEditable(true);
+    }//GEN-LAST:event_txtFiltroBusquedaMouseClicked
 
-    private void txtBuscarProductoVetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {//GEN-FIRST:event_txtBuscarProductoVetoableChange
+    private void txtFiltroBusquedaVetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {//GEN-FIRST:event_txtFiltroBusquedaVetoableChange
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtBuscarProductoVetoableChange
+    }//GEN-LAST:event_txtFiltroBusquedaVetoableChange
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void cmbOpcionesBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbOpcionesBusquedaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_cmbOpcionesBusquedaActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         // TODO add your handling code here:
@@ -589,27 +684,60 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
                         oInventarioD.borrarProducto(oInventario);
                         if (oInventarioD.isError()) {
                             JOptionPane.showMessageDialog(null,
-                                "Error consultando a la base de datos, detalle técnico:" + oInventarioD.getErrorMsg());
+                                    "Error consultando a la base de datos, detalle técnico:" + oInventarioD.getErrorMsg());
                         } else {
                             this.refrescar();
                             JOptionPane.showMessageDialog(null,
-                                "Producto eliminado con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                                    "Producto eliminado con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
                         }
 
                     }
 
                 } else {
                     JOptionPane.showMessageDialog(null,
-                        "No se ha seleccionado ningún producto", "Error", JOptionPane.ERROR_MESSAGE);
+                            "No se ha seleccionado ningún producto", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
                 JOptionPane.showMessageDialog(null,
-                    "No hay registros en la tabla.", "Error", JOptionPane.ERROR_MESSAGE);
+                        "No hay registros en la tabla.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception xp) {
             JOptionPane.showMessageDialog(null, "Error inesperado durante el proceso.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_subEliminarActionPerformed
+
+    private void numPorcentajeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_numPorcentajeStateChanged
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        try {
+            if (Double.parseDouble(numPorcentaje.getValue().toString()) < 0 || Double.parseDouble(numPorcentaje.getValue().toString()) > 100) {
+                numPorcentaje.setValue(0);
+            } else {
+                double precioCompra = Double.parseDouble(numPrecioCompra.getValue().toString());
+                double porcentaje = Double.parseDouble(numPorcentaje.getValue().toString());
+                double precioVenta = precioCompra * ((100 + porcentaje) / 100);
+                numPrecioVenta.setValue(precioVenta);
+            }
+        } catch (Exception xp) {
+            JOptionPane.showMessageDialog(null, "Error al intentar calcular el porcentaje de venta.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_numPorcentajeStateChanged
+
+    private void numPrecioCompraStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_numPrecioCompraStateChanged
+        // TODO add your handling code here:
+        try {
+            if (Double.parseDouble(numPrecioCompra.getValue().toString()) < 0) {
+                numPrecioCompra.setValue(0);
+            } else {
+                double precioCompra = Double.parseDouble(numPrecioCompra.getValue().toString());
+                double porcentaje = Double.parseDouble(numPorcentaje.getValue().toString());
+                double precioVenta = precioCompra * ((100 + porcentaje) / 100);
+                numPrecioVenta.setValue(precioVenta);
+            }
+        } catch (Exception xp) {
+            JOptionPane.showMessageDialog(null, "Error al intentar calcular el porcentaje de venta.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_numPrecioCompraStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -619,43 +747,43 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
     private javax.swing.JButton btnModificar;
     private org.edisoncor.gui.button.ButtonAction btnRegistrar;
     private javax.swing.JCheckBox chkExistencia;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
+    private javax.swing.JComboBox cmbOpcionesBusqueda;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar.Separator jSeparator1;
-    private javax.swing.JToolBar.Separator jSeparator2;
-    private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar.Separator jSeparator4;
-    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JToolBar jtbOpciones;
     private javax.swing.JLabel lblBuscarProducto;
+    private javax.swing.JLabel lblCantidad;
+    private javax.swing.JLabel lblCodProducto;
+    private javax.swing.JLabel lblDescripcion;
+    private javax.swing.JLabel lblExistencia;
+    private javax.swing.JLabel lblMarca;
+    private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblOpcionesBusqueda;
+    private javax.swing.JLabel lblPorcentaje;
+    private javax.swing.JLabel lblPrecioCompra;
+    private javax.swing.JLabel lblPrecioVenta;
+    private javax.swing.JLabel lblSignoPorcentaje;
     private javax.swing.JPopupMenu menuClickDerecho;
     private javax.swing.JSpinner numCantidad;
     private javax.swing.JSpinner numPorcentaje;
     private javax.swing.JSpinner numPrecioCompra;
     private javax.swing.JSpinner numPrecioVenta;
-    private java.awt.Panel panel1;
-    private org.edisoncor.gui.panel.PanelRect panelRect1;
     private org.edisoncor.gui.panel.PanelShadow panelShadow1;
     private org.edisoncor.gui.panel.PanelNice pnlBackground;
+    private org.edisoncor.gui.panel.PanelRect pnlCntenedorTabla;
     private org.edisoncor.gui.panel.Panel pnlDatos;
+    private java.awt.Panel pnlOpciones;
+    private javax.swing.JToolBar.Separator sptCuatro;
+    private javax.swing.JToolBar.Separator sptDos;
+    private javax.swing.JToolBar.Separator sptTres;
+    private javax.swing.JToolBar.Separator sptUno;
     private javax.swing.JMenuItem subActualizar;
     private javax.swing.JMenuItem subCopiarDatoCelda;
     private javax.swing.JMenuItem subEliminar;
     private javax.swing.JTable tbleRegsitros;
     private org.edisoncor.gui.varios.TitleBar tleBarraTitulo;
-    private javax.swing.JTextField txtBuscarProducto;
     private org.edisoncor.gui.textField.TextField txtCodProducto;
     private org.edisoncor.gui.textField.TextField txtDescripcion;
+    private javax.swing.JTextField txtFiltroBusqueda;
     private org.edisoncor.gui.textField.TextField txtMarca;
     private org.edisoncor.gui.textField.TextField txtNombre;
     // End of variables declaration//GEN-END:variables

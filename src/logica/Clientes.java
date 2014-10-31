@@ -1,16 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package logica;
 
-/**
- *
- * @author Ignacio
- */
 public class Clientes {
 
+    private int codCliente;
     private int cedula;
     private String nombre;
     private String apellidos;
@@ -22,6 +14,31 @@ public class Clientes {
     private String observacion;
     private double limiteCredito;
     private double montoActual;
+
+    public Clientes(int pCodCliente, int pCedula, String pNombre, String pApellidos, String pTelefono, String pCelular,
+            String pDireccion, String pEmail, String pFax, String pObservacion, double pLimiteCredito,
+            double pMontoActual) {
+        codCliente = pCodCliente;
+        cedula = pCedula;
+        nombre = pNombre;
+        apellidos = pApellidos;
+        telefono = pTelefono;
+        celular = pCelular;
+        direccion = pDireccion;
+        email = pEmail;
+        fax = pFax;
+        observacion = pObservacion;
+        limiteCredito = pLimiteCredito;
+        montoActual = pMontoActual;
+    }
+
+    public int getCodCliente() {
+        return codCliente;
+    }
+
+    public void setCodCliente(int codCliente) {
+        this.codCliente = codCliente;
+    }
 
     public int getCedula() {
         return cedula;
