@@ -30,6 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.hyperic.sigar.OperatingSystem;
 import org.xml.sax.InputSource;
 
 /**
@@ -61,7 +62,7 @@ public class GuardarPendientes {
         comprobarDirectorio();
     }
 
-     //Limpia los estados de error y descripcion
+    //Limpia los estados de error y descripcion
     public void limpiarEstado() {
         isError = false;
         errorDescripcion = "";
@@ -118,7 +119,6 @@ public class GuardarPendientes {
                     rutaPendientes = "C:\\Facturas pausadas\\";
                     if (!folder.exists()) {
                         folder.mkdirs();
-
                     }
                     break;
             }
@@ -126,7 +126,6 @@ public class GuardarPendientes {
             isError = true;
             errorDescripcion = xp.getMessage();
         }
-
     }
 
     //Elimina todo el contenido de la carpeta que almacena todas las facturas pausadas por el cajero

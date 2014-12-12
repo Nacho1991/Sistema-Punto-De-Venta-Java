@@ -8,6 +8,7 @@ import accesoDatos.AccesoDatosMySql;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import logica.Empleado;
+import org.hyperic.sigar.*;
 import vista.frmLogin;
 import vista.frmPrincipal;
 
@@ -19,7 +20,7 @@ public class AppProyectoParqueo {
     static AccesoDatosMySql oAccesoDatos;
 
     public static void main(String[] args) throws IOException {
-
+        
         Config cfg = new Config(System.getProperty("user.dir")
                 + "//config.cfg");
         String[] param = cfg.leerConfiguracion();
@@ -34,7 +35,7 @@ public class AppProyectoParqueo {
                         "Error conectando a la base de datos, detalle técnico: \n" + oAccesoDatos.getErrorMsg());
             } else {
 
-            //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+                //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
                  * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
                  */

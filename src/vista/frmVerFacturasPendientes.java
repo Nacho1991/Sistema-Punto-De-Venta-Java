@@ -81,13 +81,13 @@ public class frmVerFacturasPendientes extends javax.swing.JDialog {
     public void cargarListaFacturas() {
         DefaultListModel modeloLista = new DefaultListModel();
         String[] ficheros = archivos.list();
-        if (ficheros == null) {
+        if (ficheros == null || ficheros.length == 0) {
             modeloLista.addElement("¡Sin facturas pendientes!");
             lstListaFacturas.setModel(modeloLista);
             lstListaFacturas.setEnabled(false);
         } else {
-            for (int pos = 0; pos < ficheros.length; pos++) {
-                modeloLista.addElement(ficheros[pos]);
+            for (String fichero : ficheros) {
+                modeloLista.addElement(fichero);
             }
             lstListaFacturas.setModel(modeloLista);
         }

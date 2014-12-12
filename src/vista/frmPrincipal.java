@@ -740,7 +740,7 @@ public class frmPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_lblControlGeneralProductosMouseClicked
 
     private void lblIniciarFacturacionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblIniciarFacturacionMouseClicked
-        frmFacturacion oFacturacion = new frmFacturacion(this, rootPaneCheckingEnabled, cnx);
+        frmFacturacion oFacturacion = new frmFacturacion(this, rootPaneCheckingEnabled, cnx,lblDatoNombre.getText());
         oFacturacion.setVisible(true);
     }//GEN-LAST:event_lblIniciarFacturacionMouseClicked
 

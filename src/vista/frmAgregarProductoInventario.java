@@ -51,7 +51,9 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
         setLocationRelativeTo(null);
         setJTexFieldChanged(txtFiltroBusqueda);
     }
+
     //Metodo para el evnto de cambio
+
     private void setJTexFieldChanged(JTextField txt) {
         DocumentListener documentListener = new DocumentListener() {
 
@@ -72,7 +74,9 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
         };
         txt.getDocument().addDocumentListener(documentListener);
     }
-        //Metodo que permite mostrar los datos que se ingresan al TextBox
+
+    //Metodo que permite mostrar los datos que se ingresan al TextBox
+
     private void printIt(DocumentEvent documentEvent) {
         DocumentEvent.EventType type = documentEvent.getType();
         if (type.equals(DocumentEvent.EventType.CHANGE)) {
@@ -102,6 +106,7 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
                 break;
         }
     }
+
     private void mostrarFiltro(String pFiltro, String pOpcion) {
         ArrayList registros = (ArrayList) oInventarioD.filtrarInventario(pFiltro, pOpcion);
         if (oInventarioD.isError()) {
@@ -409,8 +414,8 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
             pnlCntenedorTablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlCntenedorTablaLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(110, 110, 110))
         );
 
         jtbOpciones.setFloatable(false);
@@ -509,9 +514,8 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
                 .addComponent(pnlDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(pnlOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(pnlCntenedorTabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlCntenedorTabla, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pnlBackground.add(panelShadow1, java.awt.BorderLayout.CENTER);
@@ -524,7 +528,7 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -535,32 +539,10 @@ public class frmAgregarProductoInventario extends javax.swing.JDialog {
         if (this.datos.length > 0) {
             int fila = this.tbleRegsitros.getSelectedRow();
             if (fila >= 0) {
-                String pCedulaAnterior = this.datos[fila][0];
                 frmEditarProducto oEdit = new frmEditarProducto(null, rootPaneCheckingEnabled, cnx, datos[fila][0].toString(), datos[fila][1].toString(), datos[fila][2].toString(), datos[fila][3].toString(), Double.parseDouble(datos[fila][4].toString()), Double.parseDouble(datos[fila][5].toString()), Boolean.parseBoolean(datos[fila][6].toString()), Integer.parseInt(datos[fila][7].toString()));
                 oEdit.setVisible(true);
                 if (oEdit.isAceptar()) {
-                    date = new Date();
-                    DateFormat hourdateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                    String fecha = hourdateFormat.format(date);
-                    String existencia = "";
-                    double precioVenta = Double.parseDouble(oEdit.getNumPrecioVenta().getValue().toString());
-                    double precioCompra = Double.parseDouble(oEdit.getNumPrecioCompra().getValue().toString());
-                    int cantidad = Integer.parseInt(oEdit.getNumCantidad().getValue().toString());
-                    if (oEdit.getChkExistencia().isSelected() == true) {
-                        existencia = "true";
-                    } else {
-                        existencia = "false";
-                    }
-                    Inventario oInventario = new Inventario(oEdit.getTxtCodProducto().getText(), oEdit.getTxtNombreProducto().getText(), oEdit.getTxtMarca().getText(), oEdit.getTxtDescripcion().getText(), precioCompra, precioVenta, existencia, cantidad, fecha);
-                    oInventarioD.actualizarProducto(oInventario, oEdit.getTxtCodProducto().getText());
-                    if (oInventarioD.isError()) {
-                        JOptionPane.showMessageDialog(null,
-                                "Error al intentar modificar el producto, detalle técnico: " + oInventarioD.getErrorMsg(), "Error", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        this.refrescar();
-                        JOptionPane.showMessageDialog(null,
-                                "Producto modificado con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
-                    }
+                    refrescar();
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "No se ha seleccionado ningún registro.", "Advertencia", JOptionPane.WARNING_MESSAGE);

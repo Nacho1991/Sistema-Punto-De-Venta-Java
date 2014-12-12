@@ -231,7 +231,7 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
         pnlTablaRegistros = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRegistros = new javax.swing.JTable();
-        jToolBar1 = new javax.swing.JToolBar();
+        tlbOpciones = new javax.swing.JToolBar();
         btnEliminar = new org.edisoncor.gui.button.ButtonSeven();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         btnActualizar = new org.edisoncor.gui.button.ButtonSeven();
@@ -563,8 +563,8 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
         );
 
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
+        tlbOpciones.setFloatable(false);
+        tlbOpciones.setRollover(true);
 
         btnEliminar.setText("Eliminar");
         btnEliminar.setFocusable(false);
@@ -575,8 +575,8 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
                 btnEliminarActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnEliminar);
-        jToolBar1.add(jSeparator1);
+        tlbOpciones.add(btnEliminar);
+        tlbOpciones.add(jSeparator1);
 
         btnActualizar.setText("Actualizar");
         btnActualizar.setFocusable(false);
@@ -587,22 +587,22 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
                 btnActualizarActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnActualizar);
-        jToolBar1.add(jSeparator2);
+        tlbOpciones.add(btnActualizar);
+        tlbOpciones.add(jSeparator2);
 
         lblFiltrar.setText("Filtrar:");
-        jToolBar1.add(lblFiltrar);
+        tlbOpciones.add(lblFiltrar);
 
         txtFiltroDatos.setPreferredSize(new java.awt.Dimension(150, 28));
-        jToolBar1.add(txtFiltroDatos);
-        jToolBar1.add(jSeparator3);
+        tlbOpciones.add(txtFiltroDatos);
+        tlbOpciones.add(jSeparator3);
 
         lblOpcionesBusqueda.setText("Opciones de búsqueda:");
-        jToolBar1.add(lblOpcionesBusqueda);
+        tlbOpciones.add(lblOpcionesBusqueda);
 
         cmbOpcionesBusquedaAgregar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Por código", "Por descripción", "Por marca" }));
         cmbOpcionesBusquedaAgregar.setPreferredSize(new java.awt.Dimension(150, 28));
-        jToolBar1.add(cmbOpcionesBusquedaAgregar);
+        tlbOpciones.add(cmbOpcionesBusquedaAgregar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -610,14 +610,14 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pnlPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlTablaRegistros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(tlbOpciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(pnlPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tlbOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlTablaRegistros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -700,7 +700,6 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblCantidadModificar;
     private javax.swing.JLabel lblCodigoProductoModificar;
     private javax.swing.JLabel lblDescripcionModificar;
@@ -727,6 +726,7 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
     private javax.swing.JPanel pnlTablaRegistros;
     private org.edisoncor.gui.tabbedPane.TabbedSelector2 tabAgregarProducto;
     private javax.swing.JTable tblRegistros;
+    private javax.swing.JToolBar tlbOpciones;
     private org.edisoncor.gui.varios.BarraTitle tleBarraTitulo;
     private javax.swing.JTextField txtCodigoProductoAgregar;
     private javax.swing.JTextField txtCodigoProductoModificar;

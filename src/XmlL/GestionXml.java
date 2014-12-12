@@ -131,25 +131,19 @@ public class GestionXml {
         try {
             // seleccionamos la raiz
             Element root = dom.getDocumentElement();
-
             // creamos un nuevo elemento con el atributo del numero de producto
             Element unPedido = dom.createElement("Pedido");
-
             // creamos un nuevo elemento para el cliente
             Element cliente = dom.createElement("Cliente");
             addCliente(pedido.getCliente(), cliente);
-
             // creamos un nuevo elemento para los productos de los que consta el pedido
             Element productos = dom.createElement("Productos");
             addProductos(pedido.getListaProductos(), productos);
-
             // insertamos el cliente y los productos en el elemento del pedido
             unPedido.appendChild(cliente);
             unPedido.appendChild(productos);
-
             // insertamos el pedido en la raiz
             root.appendChild(unPedido);
-
             // insertamos el pedido en la raiz
         } catch (Exception xp) {
             isError = true;
@@ -216,7 +210,6 @@ public class GestionXml {
             isError = true;
             errorDescripcion = e.getMessage();
         }
-
         for (int i = 0; i < pedidos.size(); i++) {
             addPedido(pedidos.get(i));
         }

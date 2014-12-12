@@ -53,6 +53,7 @@ public class frmEditarProducto extends javax.swing.JDialog {
                 setVisible(false);
             }
         });
+        oInventarioD = new InventarioD(pCnx);
         setLocationRelativeTo(null);
         txtCodProducto.setText(pCodigoProducto);
         txtNombreProducto.setText(pNombreProducto);
@@ -384,29 +385,33 @@ public class frmEditarProducto extends javax.swing.JDialog {
                 || numCantidad.getValue().equals(0) || numPorcentaje.getValue().equals(0) || numPrecioCompra.getValue().equals(0) || numPrecioVenta.getValue().equals(0)) {
             JOptionPane.showMessageDialog(null, "Faltan datos importantes, por favor corrija para continuar.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            Date date = new Date();
-            DateFormat hourdateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            String fecha = hourdateFormat.format(date);
-            String existencia;
-            double precioVenta = Double.parseDouble(numPrecioVenta.getValue().toString());
-            double precioCompra = Double.parseDouble(numPrecioCompra.getValue().toString());
-            int cantidad = Integer.parseInt(numCantidad.getValue().toString());
-            if (chkExistencia.isSelected() == true) {
-                existencia = "true";
-            } else {
-                existencia = "false";
+            try {
+                Date date = new Date();
+                DateFormat hourdateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                String fecha = hourdateFormat.format(date);
+                String existencia;
+                double precioVenta = Double.parseDouble(numPrecioVenta.getValue().toString());
+                double precioCompra = Double.parseDouble(numPrecioCompra.getValue().toString());
+                int cantidad = Integer.parseInt(numCantidad.getValue().toString());
+                if (chkExistencia.isSelected() == true) {
+                    existencia = "true";
+                } else {
+                    existencia = "false";
+                }
+                Inventario oInventario = new Inventario(txtCodProducto.getText(), txtNombreProducto.getText(), txtMarca.getText(), txtDescripcion.getText(), precioCompra, precioVenta, existencia, cantidad, fecha);
+                oInventarioD.actualizarProducto(oInventario, txtCodProducto.getText());
+                if (oInventarioD.isError()) {
+                    JOptionPane.showMessageDialog(null,
+                            "Error al intentar modificar el producto, detalle técnico: " + oInventarioD.getErrorMsg(), "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Producto modificado con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                }
+                aceptar = true;
+                setVisible(false);
+            } catch (Exception xp) {
+                JOptionPane.showMessageDialog(null, xp.getMessage());
             }
-            Inventario oInventario = new Inventario(txtCodProducto.getText(), txtNombreProducto.getText(), txtMarca.getText(), txtDescripcion.getText(), precioCompra, precioVenta, existencia, cantidad, fecha);
-            oInventarioD.actualizarProducto(oInventario, txtCodProducto.getText());
-            if (oInventarioD.isError()) {
-                JOptionPane.showMessageDialog(null,
-                        "Error al intentar modificar el producto, detalle técnico: " + oInventarioD.getErrorMsg(), "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null,
-                        "Producto modificado con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
-            }
-            aceptar = true;
-            setVisible(false);
         }
     }//GEN-LAST:event_btnEditarActionPerformed
 
