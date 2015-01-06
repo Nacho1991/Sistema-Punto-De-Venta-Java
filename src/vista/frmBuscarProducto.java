@@ -7,8 +7,6 @@ package vista;
 
 import accesoDatos.AccesoDatosMySql;
 import accesoDatos.InventarioD;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -16,8 +14,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import logica.Inventario;
-import org.edisoncor.gui.util.WindowDragger;
-import org.edisoncor.gui.util.WindowsUtil;
 
 /**
  *
@@ -28,6 +24,7 @@ public class frmBuscarProducto extends javax.swing.JDialog {
     private AccesoDatosMySql cnx;
     private boolean aceptar;
     ArrayList tarjetas;
+    private String id;
     private String codigo;
     private String nombre;
     private String marca;
@@ -38,24 +35,16 @@ public class frmBuscarProducto extends javax.swing.JDialog {
     private String cantidad;
     private String fechaEntrada;
     private InventarioD oInventarioD;
-    private String[] cabeceras = {"Código", "Nombre", "Marca", "Descripción", "Precio de compra", "Precio de venta", "Existencia", "Cantidad", "Fecha de entrada"};
-    private String[][] datos = new String[0][9];
+    private String[] cabeceras = {"N° Registro","Código", "Nombre", "Marca", "Descripción", "Precio de compra", "Precio de venta", "Existencia", "Cantidad", "Fecha de entrada"};
+    private String[][] datos = new String[0][10];
 
     public frmBuscarProducto(java.awt.Frame parent, boolean modal, AccesoDatosMySql pCnx) {
         super(parent, modal);
-        setUndecorated(true);
         oInventarioD = new InventarioD(pCnx);
         cnx = pCnx;
         initComponents();
         refrescar();
-        WindowsUtil.makeWindowsShape(this, pnlBackground.getShape());
-        new WindowDragger(this, pnlBackground);
-
-        tleBarraTitulo.addCloseAction(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                setVisible(false);
-            }
-        });
+       
         setLocationRelativeTo(null);
         //Cargamos en el constructor el evento de cambio
         setJTexFieldChanged(txtFiltroBusqueda);
@@ -126,18 +115,19 @@ public class frmBuscarProducto extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null,
                     "Error consultando a la base de datos, detalle técnico:" + oInventarioD.getErrorMsg());
         } else {
-            this.datos = new String[tarjetas.size()][9];
+            this.datos = new String[tarjetas.size()][10];
             for (int i = 0; i < tarjetas.size(); i++) {
                 Inventario aux = (Inventario) tarjetas.get(i);
-                this.datos[i][0] = aux.getCodProducto();
-                this.datos[i][1] = aux.getNombre();
-                this.datos[i][2] = aux.getMarca();
-                this.datos[i][3] = aux.getDescripcion();
-                this.datos[i][4] = String.valueOf(aux.getPrecioCompra());
-                this.datos[i][5] = String.valueOf(aux.getPrecioVenta());
-                this.datos[i][6] = aux.getExistencia();
-                this.datos[i][7] = String.valueOf(aux.getCantidad());
-                this.datos[i][8] = aux.getFechaEntrada();
+                this.datos[i][0] = String.valueOf(aux.getId());
+                this.datos[i][1] = aux.getCodigoArticulo();
+                this.datos[i][2] = aux.getNombre();
+                this.datos[i][3] = aux.getMarca();
+                this.datos[i][4] = aux.getDescripcion();
+                this.datos[i][5] = String.valueOf(aux.getPrecioCompra());
+                this.datos[i][6] = String.valueOf(aux.getPrecioVenta());
+                this.datos[i][7] = aux.getExistencia();
+                this.datos[i][8] = String.valueOf(aux.getCantidad());
+                this.datos[i][9] = aux.getFechaEntrada();
 
             }
             this.modelo.setDataVector(datos, cabeceras);
@@ -151,18 +141,19 @@ public class frmBuscarProducto extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null,
                     "Error consultando a la base de datos, detalle técnico:" + oInventarioD.getErrorMsg());
         } else {
-            this.datos = new String[tarjetas.size()][9];
+            this.datos = new String[tarjetas.size()][10];
             for (int i = 0; i < tarjetas.size(); i++) {
                 Inventario aux = (Inventario) tarjetas.get(i);
-                this.datos[i][0] = aux.getCodProducto();
-                this.datos[i][1] = aux.getNombre();
-                this.datos[i][2] = aux.getMarca();
-                this.datos[i][3] = aux.getDescripcion();
-                this.datos[i][4] = String.valueOf(aux.getPrecioCompra());
-                this.datos[i][5] = String.valueOf(aux.getPrecioVenta());
-                this.datos[i][6] = aux.getExistencia();
-                this.datos[i][7] = String.valueOf(aux.getCantidad());
-                this.datos[i][8] = aux.getFechaEntrada();
+                this.datos[i][0] = String.valueOf(aux.getId());
+                this.datos[i][1] = aux.getCodigoArticulo();
+                this.datos[i][2] = aux.getNombre();
+                this.datos[i][3] = aux.getMarca();
+                this.datos[i][4] = aux.getDescripcion();
+                this.datos[i][5] = String.valueOf(aux.getPrecioCompra());
+                this.datos[i][6] = String.valueOf(aux.getPrecioVenta());
+                this.datos[i][7] = aux.getExistencia();
+                this.datos[i][8] = String.valueOf(aux.getCantidad());
+                this.datos[i][9] = aux.getFechaEntrada();
 
             }
             this.modelo.setDataVector(datos, cabeceras);
@@ -174,6 +165,15 @@ public class frmBuscarProducto extends javax.swing.JDialog {
         return tarjetas;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    
     public void setTarjetas(ArrayList tarjetas) {
         this.tarjetas = tarjetas;
     }
@@ -273,12 +273,11 @@ public class frmBuscarProducto extends javax.swing.JDialog {
         menuClickDerecho = new javax.swing.JPopupMenu();
         smnSeleccionar = new javax.swing.JMenuItem();
         pnlBackground = new org.edisoncor.gui.panel.PanelNice();
-        tleBarraTitulo = new org.edisoncor.gui.varios.TitleBar();
         pnlContenedor = new org.edisoncor.gui.panel.PanelShadow();
         btnSeleccionar = new org.edisoncor.gui.button.ButtonColoredAction();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
+        lblBuscarProducto = new javax.swing.JLabel();
+        lblOpcionesBusqueda = new javax.swing.JLabel();
+        pnlRegistros = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblaRegistros = new javax.swing.JTable();
         cmbOpcionesBusqueda = new javax.swing.JComboBox();
@@ -293,15 +292,11 @@ public class frmBuscarProducto extends javax.swing.JDialog {
         menuClickDerecho.add(smnSeleccionar);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Buscador de productos");
 
-        pnlBackground.setBackground(new java.awt.Color(138, 138, 138));
+        pnlBackground.setBackground(new java.awt.Color(240, 240, 240));
         pnlBackground.setForeground(new java.awt.Color(0, 51, 255));
 
-        tleBarraTitulo.setBackground(new java.awt.Color(0, 0, 0));
-        tleBarraTitulo.setTitulo("Buscar productos");
-        pnlBackground.add(tleBarraTitulo, java.awt.BorderLayout.PAGE_START);
-
-        pnlContenedor.setBackground(new java.awt.Color(50, 50, 50));
         pnlContenedor.setForeground(new java.awt.Color(0, 51, 255));
 
         btnSeleccionar.setText("Seleccionar");
@@ -311,67 +306,70 @@ public class frmBuscarProducto extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(254, 254, 254));
-        jLabel1.setText("Buscar producto:");
+        lblBuscarProducto.setBackground(new java.awt.Color(0, 0, 0));
+        lblBuscarProducto.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
+        lblBuscarProducto.setText("Buscar producto:");
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(254, 254, 254));
-        jLabel2.setText("Opciones de búsqueda:");
+        lblOpcionesBusqueda.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
+        lblOpcionesBusqueda.setText("Opciones de búsqueda:");
 
-        jPanel1.setBackground(new java.awt.Color(138, 138, 138));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Lista de registros"));
+        pnlRegistros.setBorder(javax.swing.BorderFactory.createTitledBorder("Lista de registros"));
 
         tblaRegistros.setBackground(new java.awt.Color(254, 254, 254));
         tblaRegistros.setForeground(new java.awt.Color(1, 1, 1));
         tblaRegistros.setComponentPopupMenu(menuClickDerecho);
         jScrollPane1.setViewportView(tblaRegistros);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+        javax.swing.GroupLayout pnlRegistrosLayout = new javax.swing.GroupLayout(pnlRegistros);
+        pnlRegistros.setLayout(pnlRegistrosLayout);
+        pnlRegistrosLayout.setHorizontalGroup(
+            pnlRegistrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 772, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
+        pnlRegistrosLayout.setVerticalGroup(
+            pnlRegistrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlRegistrosLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
+        cmbOpcionesBusqueda.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
         cmbOpcionesBusqueda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Descripción", "Marca", "Código" }));
+
+        txtFiltroBusqueda.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
 
         javax.swing.GroupLayout pnlContenedorLayout = new javax.swing.GroupLayout(pnlContenedor);
         pnlContenedor.setLayout(pnlContenedorLayout);
         pnlContenedorLayout.setHorizontalGroup(
             pnlContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlRegistros, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(pnlContenedorLayout.createSequentialGroup()
-                .addContainerGap(64, Short.MAX_VALUE)
+                .addGap(42, 42, 42)
                 .addGroup(pnlContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(lblBuscarProducto, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblOpcionesBusqueda, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cmbOpcionesBusqueda, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtFiltroBusqueda, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE))
+                    .addComponent(txtFiltroBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(104, 104, 104))
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlContenedorLayout.setVerticalGroup(
             pnlContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlContenedorLayout.createSequentialGroup()
-                .addGap(38, 38, 38)
+                .addGap(24, 24, 24)
                 .addGroup(pnlContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(lblBuscarProducto)
                     .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtFiltroBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
+                    .addComponent(lblOpcionesBusqueda)
                     .addComponent(cmbOpcionesBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(17, 17, 17)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(31, 31, 31)
+                .addComponent(pnlRegistros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnlBackground.add(pnlContenedor, java.awt.BorderLayout.CENTER);
@@ -397,15 +395,16 @@ public class frmBuscarProducto extends javax.swing.JDialog {
             int fila = tblaRegistros.getSelectedRow();
             if (fila >= 0) {
                 if (numeroProductos > 0) {
-                    codigo = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 0));
-                    nombre = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 1));
-                    marca = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 2));
-                    descripcion = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 3));
-                    precioCompra = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 4));
-                    precioVenta = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 5));
-                    existencia = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 6));
-                    cantidad = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 7));
-                    fechaEntrada = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 8));
+                    id = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 0));
+                    codigo = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 1));
+                    nombre = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 2));
+                    marca = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 3));
+                    descripcion = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 4));
+                    precioCompra = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 5));
+                    precioVenta = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 6));
+                    existencia = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 7));
+                    cantidad = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 8));
+                    fechaEntrada = String.valueOf(modelo.getValueAt(tblaRegistros.getSelectedRow(), 9));
                     aceptar = true;
                     this.setVisible(false);
                 } else {
@@ -459,16 +458,15 @@ public class frmBuscarProducto extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.edisoncor.gui.button.ButtonColoredAction btnSeleccionar;
     private javax.swing.JComboBox cmbOpcionesBusqueda;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblBuscarProducto;
+    private javax.swing.JLabel lblOpcionesBusqueda;
     private javax.swing.JPopupMenu menuClickDerecho;
     private org.edisoncor.gui.panel.PanelNice pnlBackground;
     private org.edisoncor.gui.panel.PanelShadow pnlContenedor;
+    private javax.swing.JPanel pnlRegistros;
     private javax.swing.JMenuItem smnSeleccionar;
     private javax.swing.JTable tblaRegistros;
-    private org.edisoncor.gui.varios.TitleBar tleBarraTitulo;
     private javax.swing.JTextField txtFiltroBusqueda;
     // End of variables declaration//GEN-END:variables
 }

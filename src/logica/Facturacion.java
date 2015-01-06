@@ -10,13 +10,27 @@ package logica;
  * @author Ignacio
  */
 public class Facturacion {
+
     private int numeroFactura;
-    private int codeProducto;
-    private String fechaEmision;
-    private String vendidoPor;
+    private String cedulaCliente;
+    private String cedulaEmpleado;
     private String observacion;
-    private double total;
-    private double descuento;
+    private String fechaEmitida;
+    private String vendidoPor;
+    
+
+    public Facturacion(int pNumeroFactura) {
+        numeroFactura = pNumeroFactura;
+    }
+
+    public Facturacion(int numeroFactura, String cedulaCliente, String cedulaEmpleado, String observacion, String fechaEmitida, String vendidoPor) {
+        this.numeroFactura = numeroFactura;
+        this.cedulaCliente = cedulaCliente;
+        this.cedulaEmpleado = cedulaEmpleado;
+        this.observacion = observacion;
+        this.fechaEmitida = fechaEmitida;
+        this.vendidoPor = vendidoPor;
+    }
 
     public int getNumeroFactura() {
         return numeroFactura;
@@ -26,28 +40,20 @@ public class Facturacion {
         this.numeroFactura = numeroFactura;
     }
 
-    public int getCodeProducto() {
-        return codeProducto;
+    public String getCedulaCliente() {
+        return cedulaCliente;
     }
 
-    public void setCodeProducto(int codeProducto) {
-        this.codeProducto = codeProducto;
+    public void setCedulaCliente(String cedulaCliente) {
+        this.cedulaCliente = cedulaCliente;
     }
 
-    public String getFechaEmision() {
-        return fechaEmision;
+    public String getCedulaEmpleado() {
+        return cedulaEmpleado;
     }
 
-    public void setFechaEmision(String fechaEmision) {
-        this.fechaEmision = fechaEmision;
-    }
-
-    public String getVendidoPor() {
-        return vendidoPor;
-    }
-
-    public void setVendidoPor(String vendidoPor) {
-        this.vendidoPor = vendidoPor;
+    public void setCedulaEmpleado(String cedulaEmpleado) {
+        this.cedulaEmpleado = cedulaEmpleado;
     }
 
     public String getObservacion() {
@@ -58,20 +64,20 @@ public class Facturacion {
         this.observacion = observacion;
     }
 
-    public double getTotal() {
-        return total;
+    public String getFechaEmitida() {
+        return fechaEmitida;
     }
 
-    public void setTotal(double total) {
-        this.total = total;
+    public void setFechaEmitida(String fechaEmitida) {
+        this.fechaEmitida = fechaEmitida;
     }
 
-    public double getDescuento() {
-        return descuento;
+    public String getVendidoPor() {
+        return vendidoPor;
     }
 
-    public void setDescuento(double descuento) {
-        this.descuento = descuento;
+    public void setVendidoPor(String vendidoPor) {
+        this.vendidoPor = vendidoPor;
     }
-    
+
 }

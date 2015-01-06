@@ -9,6 +9,7 @@ import XmlD.Cliente;
 import XmlD.Pedido;
 import XmlD.Producto;
 import XmlL.GuardarPendientes;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -37,20 +38,31 @@ public class frmVerFacturasPendientes extends javax.swing.JDialog {
 
     public frmVerFacturasPendientes(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        setUndecorated(true);
         initComponents();
         oGuardarPendientes = new GuardarPendientes();
         aceptar = false;
         productos = new ArrayList<>();
         cliente = new ArrayList<>();
-        archivos = new File("/home/ignacio/Escritorio/Facturas pausadas");
+        comprobarSistema();
         cargarListaFacturas();
-        tleBarraTitulo.addCloseAction(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                setVisible(false);
-            }
-        });
+        
         setLocationRelativeTo(null);
+    }
+
+    public void comprobarSistema() {
+        try {
+            String TypeOS = System.getProperty("os.name");
+            switch (TypeOS) {
+                case "Linux":
+                    archivos = new File("/home/ignacio/Escritorio/Facturas pausadas");
+                    break;
+                case "Windows 7":
+                    archivos = new File("C:\\Sistema Punto Venta\\Facturas pausadas");
+                    break;
+            }
+        } catch (Exception xp) {
+            JOptionPane.showMessageDialog(null, "Error inesperado por parte de la aplicación. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     //Se crea un modelo para la tabla de productos
@@ -71,7 +83,6 @@ public class frmVerFacturasPendientes extends javax.swing.JDialog {
             this.datos[i][3] = aux.getDisponible();
             this.datos[i][4] = aux.getPrecioUnitario();
             this.datos[i][5] = aux.getPrecioTotal();
-
         }
         this.modelo.setDataVector(datos, cabeceras);
         this.tblaRegistros.setModel(modelo);
@@ -85,6 +96,7 @@ public class frmVerFacturasPendientes extends javax.swing.JDialog {
             modeloLista.addElement("¡Sin facturas pendientes!");
             lstListaFacturas.setModel(modeloLista);
             lstListaFacturas.setEnabled(false);
+            btnEliminarTodo.setEnabled(false);
         } else {
             for (String fichero : ficheros) {
                 modeloLista.addElement(fichero);
@@ -117,7 +129,6 @@ public class frmVerFacturasPendientes extends javax.swing.JDialog {
         mnuEliminar = new javax.swing.JMenuItem();
         mnuVerDetalles = new javax.swing.JMenuItem();
         pnlBackground = new org.edisoncor.gui.panel.PanelNice();
-        tleBarraTitulo = new org.edisoncor.gui.varios.TitleBar();
         pnlVisor = new org.edisoncor.gui.panel.PanelShadow();
         pnlGeneralContainer = new javax.swing.JPanel();
         pnlScllLst = new javax.swing.JScrollPane();
@@ -147,13 +158,9 @@ public class frmVerFacturasPendientes extends javax.swing.JDialog {
         menuClikDerechoList.add(mnuVerDetalles);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Ver facturas pendientes");
 
-        pnlBackground.setBackground(new java.awt.Color(204, 204, 204));
-
-        tleBarraTitulo.setBackground(new java.awt.Color(1, 1, 1));
-        tleBarraTitulo.setForeground(new java.awt.Color(1, 1, 1));
-        tleBarraTitulo.setTitulo("Facturas pendientes");
-        pnlBackground.add(tleBarraTitulo, java.awt.BorderLayout.PAGE_START);
+        pnlBackground.setBackground(new java.awt.Color(0, 0, 0));
 
         pnlGeneralContainer.setBorder(javax.swing.BorderFactory.createTitledBorder("Lista de facturas"));
 
@@ -201,28 +208,23 @@ public class frmVerFacturasPendientes extends javax.swing.JDialog {
             .addGroup(pnlDatosClienteLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlDatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblCedula)
+                    .addComponent(lblNombre)
+                    .addComponent(lblDireccion)
+                    .addComponent(lblTelefono)
+                    .addComponent(lblTipoCliente))
+                .addGap(28, 28, 28)
+                .addGroup(pnlDatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlDatosClienteLayout.createSequentialGroup()
+                        .addComponent(txtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCargarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlDatosClienteLayout.createSequentialGroup()
                         .addGroup(pnlDatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblCedula)
-                            .addComponent(lblNombre)
-                            .addComponent(lblDireccion)
-                            .addComponent(lblTelefono))
-                        .addGap(54, 54, 54)
-                        .addGroup(pnlDatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlDatosClienteLayout.createSequentialGroup()
-                                .addComponent(txtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnCargarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(pnlDatosClienteLayout.createSequentialGroup()
-                                .addGroup(pnlDatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(pnlDatosClienteLayout.createSequentialGroup()
-                        .addComponent(lblTipoCliente)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtTipoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTipoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -234,23 +236,23 @@ public class frmVerFacturasPendientes extends javax.swing.JDialog {
                     .addComponent(lblCedula)
                     .addComponent(txtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCargarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlDatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlDatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblNombre)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNombre, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlDatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlDatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblDireccion)
                     .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlDatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTelefono)
-                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTelefono))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlDatosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTipoCliente)
-                    .addComponent(txtTipoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(36, Short.MAX_VALUE))
+                    .addComponent(txtTipoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTipoCliente))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         pnlContainer.setBorder(javax.swing.BorderFactory.createTitledBorder("Lista de productos"));
@@ -447,7 +449,6 @@ public class frmVerFacturasPendientes extends javax.swing.JDialog {
     private javax.swing.JScrollPane pnlScllLst;
     private org.edisoncor.gui.panel.PanelShadow pnlVisor;
     private javax.swing.JTable tblaRegistros;
-    private org.edisoncor.gui.varios.TitleBar tleBarraTitulo;
     private javax.swing.JTextField txtCedula;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtNombre;

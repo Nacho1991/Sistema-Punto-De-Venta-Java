@@ -5,8 +5,10 @@
  */
 package vista;
 
+import Componentes.*;
 import accesoDatos.AccesoDatosMySql;
 import accesoDatos.InventarioD;
+import java.awt.HeadlessException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,7 +19,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import logica.Inventario;
-import org.edisoncor.gui.util.WindowDragger;
 
 /**
  *
@@ -28,25 +29,28 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
     private InventarioD oInventarioD;
     private Date date;
     ArrayList tarjetas;
-    private String[] cabeceras = {"Código", "Nombre", "Marca", "Descripción", "Precio de compra", "Precio de venta", "Existencia", "Cantidad", "Fecha de entrada"};
-    private String[][] datos = new String[0][9];
+    private String[] cabeceras = {"N° Registro", "Código", "Nombre", "Marca", "Descripción", "Precio de compra", "Precio de venta", "Existencia", "Cantidad", "Fecha de entrada"};
+    private String[][] datos = new String[0][10];
 
     public frmControlTotalInventario(AccesoDatosMySql pCnx) {
-        setUndecorated(true);
         initComponents();
+        this.setExtendedState(MAXIMIZED_BOTH);
         oInventarioD = new InventarioD(pCnx);
         refrescar();
         txtFiltroDatos.setSize(300, 300);
         date = new Date();
-        new WindowDragger(this, pnlPrincipal);
-        WindowDragger w = new WindowDragger(this, tleBarraTitulo);
         setLocationRelativeTo(null);
         setJTexFieldChanged(txtFiltroDatos);
     }
-    private DefaultTableModel modelo = new DefaultTableModel() {
+    private final DefaultTableModel modelo = new DefaultTableModel() {
         @Override
         public boolean isCellEditable(int row, int column) {
-            return false;
+            switch (column) {
+                case 7:
+                    return true;
+                default:
+                    return false;
+            }
         }
     };
 
@@ -56,22 +60,24 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,
                     "Error consultando a la base de datos, detalle técnico:" + oInventarioD.getErrorMsg());
         } else {
-            this.datos = new String[tarjetas.size()][9];
+            this.datos = new String[tarjetas.size()][10];
             for (int i = 0; i < tarjetas.size(); i++) {
                 Inventario aux = (Inventario) tarjetas.get(i);
-                this.datos[i][0] = aux.getCodProducto();
-                this.datos[i][1] = aux.getNombre();
-                this.datos[i][2] = aux.getMarca();
-                this.datos[i][3] = aux.getDescripcion();
-                this.datos[i][4] = String.valueOf(aux.getPrecioCompra());
-                this.datos[i][5] = String.valueOf(aux.getPrecioVenta());
-                this.datos[i][6] = aux.getExistencia();
-                this.datos[i][7] = String.valueOf(aux.getCantidad());
-                this.datos[i][8] = aux.getFechaEntrada();
+                this.datos[i][0] = String.valueOf(aux.getId());
+                this.datos[i][1] = aux.getCodigoArticulo();
+                this.datos[i][2] = aux.getNombre();
+                this.datos[i][3] = aux.getMarca();
+                this.datos[i][4] = aux.getDescripcion();
+                this.datos[i][5] = String.valueOf(aux.getPrecioCompra());
+                this.datos[i][6] = String.valueOf(aux.getPrecioVenta());
+                this.datos[i][7] = aux.getExistencia();
+                this.datos[i][8] = String.valueOf(aux.getCantidad());
+                this.datos[i][9] = aux.getFechaEntrada();
 
             }
             this.modelo.setDataVector(datos, cabeceras);
             this.tblRegistros.setModel(modelo);
+
         }
     }
 
@@ -83,7 +89,11 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
                     int respuesta = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea eliminar el producto seleccionado?", "Confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if (respuesta == JOptionPane.YES_OPTION) {
 
-                        Inventario oInventario = new Inventario(this.datos[fila][0], this.datos[fila][1], this.datos[fila][2], this.datos[fila][3], Double.parseDouble(this.datos[fila][4].toString()), Double.parseDouble(this.datos[fila][5].toString()), this.datos[fila][6], Integer.parseInt(this.datos[fila][7].toString()), this.datos[fila][8]);
+                        Inventario oInventario = new Inventario(
+                                Integer.parseInt(this.datos[fila][0]), this.datos[fila][1], this.datos[fila][2], this.datos[fila][3],
+                                this.datos[fila][4], Double.parseDouble(this.datos[fila][5]),
+                                Double.parseDouble(this.datos[fila][6]), this.datos[fila][7],
+                                Integer.parseInt(this.datos[fila][8]), this.datos[fila][9]);
                         oInventarioD.borrarProducto(oInventario);
                         if (oInventarioD.isError()) {
                             JOptionPane.showMessageDialog(null,
@@ -104,11 +114,12 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null,
                         "No hay registros en la tabla.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (Exception xp) {
-            JOptionPane.showMessageDialog(null, "Error inesperado durante el proceso.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (HeadlessException | NumberFormatException xp) {
+            JOptionPane.showMessageDialog(null, "Error inesperado durante el proceso. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 //Metodo para el evnto de cambio
+
     private void setJTexFieldChanged(JTextField txt) {
         DocumentListener documentListener = new DocumentListener() {
 
@@ -129,6 +140,7 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
         };
         txt.getDocument().addDocumentListener(documentListener);
     }
+
     //Metodo que permite mostrar los datos que se ingresan al TextBox
     private void printIt(DocumentEvent documentEvent) {
         DocumentEvent.EventType type = documentEvent.getType();
@@ -140,11 +152,12 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
             txtJTextFieldChanged();
         }
     }
+
     private void txtJTextFieldChanged() {
         String opcion = cmbOpcionesBusquedaAgregar.getSelectedItem().toString();
         switch (opcion) {
             case "Por código":
-                opcion = "Id_Producto";
+                opcion = "Codigo_Articulo";
                 mostrarFiltro(txtFiltroDatos.getText(), opcion);
                 break;
             case "Por descripción":
@@ -157,36 +170,38 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
                 break;
         }
     }
+
     private void mostrarFiltro(String pFiltro, String pOpcion) {
         tarjetas = (ArrayList) oInventarioD.filtrarInventario(pFiltro, pOpcion);
         if (oInventarioD.isError()) {
             JOptionPane.showMessageDialog(null,
                     "Error consultando a la base de datos, detalle técnico:" + oInventarioD.getErrorMsg());
         } else {
-            this.datos = new String[tarjetas.size()][9];
+            this.datos = new String[tarjetas.size()][10];
             for (int i = 0; i < tarjetas.size(); i++) {
                 Inventario aux = (Inventario) tarjetas.get(i);
-                this.datos[i][0] = aux.getCodProducto();
-                this.datos[i][1] = aux.getNombre();
-                this.datos[i][2] = aux.getMarca();
-                this.datos[i][3] = aux.getDescripcion();
-                this.datos[i][4] = String.valueOf(aux.getPrecioCompra());
-                this.datos[i][5] = String.valueOf(aux.getPrecioVenta());
-                this.datos[i][6] = aux.getExistencia();
-                this.datos[i][7] = String.valueOf(aux.getCantidad());
-                this.datos[i][8] = aux.getFechaEntrada();
+                this.datos[i][0] = String.valueOf(aux.getId());
+                this.datos[i][1] = aux.getCodigoArticulo();
+                this.datos[i][2] = aux.getNombre();
+                this.datos[i][3] = aux.getMarca();
+                this.datos[i][4] = aux.getDescripcion();
+                this.datos[i][5] = String.valueOf(aux.getPrecioCompra());
+                this.datos[i][6] = String.valueOf(aux.getPrecioVenta());
+                this.datos[i][7] = aux.getExistencia();
+                this.datos[i][8] = String.valueOf(aux.getCantidad());
+                this.datos[i][9] = aux.getFechaEntrada();
 
             }
             this.modelo.setDataVector(datos, cabeceras);
             this.tblRegistros.setModel(modelo);
         }
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         pnlPrincipal = new org.edisoncor.gui.panel.PanelNice();
-        tleBarraTitulo = new org.edisoncor.gui.varios.BarraTitle();
         tabAgregarProducto = new org.edisoncor.gui.tabbedPane.TabbedSelector2();
         pnlAgregarProducto = new org.edisoncor.gui.panel.PanelNice();
         pnlComponentesAgregar = new org.edisoncor.gui.panel.PanelShadow();
@@ -196,18 +211,20 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
         numPrecioCompraAgregar = new javax.swing.JSpinner();
         btnCancelarAgregar = new org.edisoncor.gui.button.ButtonAction();
         btnAgregar = new org.edisoncor.gui.button.ButtonAction();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        lblCodProductoAgregar = new javax.swing.JLabel();
+        lblNombreProductoAgregar = new javax.swing.JLabel();
+        lblMarcaAgregar = new javax.swing.JLabel();
+        lblDescripcionAgregar = new javax.swing.JLabel();
+        lblPrecioCompraAgregar = new javax.swing.JLabel();
+        lblPrecioVentaAgregar = new javax.swing.JLabel();
+        lblCantidadAgregar = new javax.swing.JLabel();
+        lblPorcentajeAgregar = new javax.swing.JLabel();
         txtCodigoProductoAgregar = new javax.swing.JTextField();
         txtNombreProductoAgregar = new javax.swing.JTextField();
         txtMarcaAgregar = new javax.swing.JTextField();
         txtDescripcionAgregar = new javax.swing.JTextField();
+        lblExistenciaAgregar = new javax.swing.JLabel();
+        chkExistenciaAgregar = new javax.swing.JCheckBox();
         pnlModificarProductos = new org.edisoncor.gui.panel.PanelNice();
         pnlComponentesModificar = new org.edisoncor.gui.panel.PanelShadow();
         numPorcentajeModificar = new javax.swing.JSpinner();
@@ -228,6 +245,10 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
         txtNombreProductoModificar = new javax.swing.JTextField();
         txtMarcaModificar = new javax.swing.JTextField();
         txtDescripcionModificar = new javax.swing.JTextField();
+        txtNumeroRegistro = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        lblExistenciaModificar = new javax.swing.JLabel();
+        chkExistenciaModificar = new javax.swing.JCheckBox();
         pnlTablaRegistros = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRegistros = new javax.swing.JTable();
@@ -243,14 +264,15 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
         cmbOpcionesBusquedaAgregar = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Controlador total de inventario");
 
         pnlPrincipal.setBackground(new java.awt.Color(242, 242, 242));
-        pnlPrincipal.add(tleBarraTitulo, java.awt.BorderLayout.PAGE_START);
 
         tabAgregarProducto.setForeground(new java.awt.Color(1, 1, 1));
         tabAgregarProducto.setColorBackGround(new java.awt.Color(242, 242, 242));
         tabAgregarProducto.setColorDeBorde(new java.awt.Color(1, 1, 1));
         tabAgregarProducto.setColorDeSegundoBorde(new java.awt.Color(1, 1, 1));
+        tabAgregarProducto.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
         tabAgregarProducto.setListColor(new java.awt.Color(1, 1, 1));
         tabAgregarProducto.setSelectionColor(new java.awt.Color(1, 1, 1));
 
@@ -262,13 +284,27 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
         pnlComponentesAgregar.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
 
         numPorcentajeAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        numPorcentajeAgregar.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 100.0d, 1.0d));
+        numPorcentajeAgregar.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                numPorcentajeAgregarStateChanged(evt);
+            }
+        });
 
         numCantidadAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
 
         numPrecioVentaAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        numPrecioVentaAgregar.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 2.147483647E9d, 1.0d));
         numPrecioVentaAgregar.setDoubleBuffered(true);
+        numPrecioVentaAgregar.setEnabled(false);
 
         numPrecioCompraAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        numPrecioCompraAgregar.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 1.0E26d, 1.0d));
+        numPrecioCompraAgregar.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                numPrecioCompraAgregarStateChanged(evt);
+            }
+        });
 
         btnCancelarAgregar.setText("Cancelar");
         btnCancelarAgregar.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
@@ -286,30 +322,30 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setBackground(new java.awt.Color(254, 254, 254));
-        jLabel1.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        jLabel1.setText("Código del producto:");
+        lblCodProductoAgregar.setBackground(new java.awt.Color(254, 254, 254));
+        lblCodProductoAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        lblCodProductoAgregar.setText("Código del producto:");
 
-        jLabel2.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        jLabel2.setText("Nombre del producto:");
+        lblNombreProductoAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        lblNombreProductoAgregar.setText("Nombre del producto:");
 
-        jLabel3.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        jLabel3.setText("Marca:");
+        lblMarcaAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        lblMarcaAgregar.setText("Marca:");
 
-        jLabel4.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        jLabel4.setText("Descripción:");
+        lblDescripcionAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        lblDescripcionAgregar.setText("Descripción:");
 
-        jLabel5.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        jLabel5.setText("Precio de compra:");
+        lblPrecioCompraAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        lblPrecioCompraAgregar.setText("Precio de compra:");
 
-        jLabel6.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        jLabel6.setText("Precio de venta:");
+        lblPrecioVentaAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        lblPrecioVentaAgregar.setText("Precio de venta:");
 
-        jLabel7.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        jLabel7.setText("Cantidad:");
+        lblCantidadAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        lblCantidadAgregar.setText("Cantidad:");
 
-        jLabel8.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        jLabel8.setText("Porcentaje:");
+        lblPorcentajeAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        lblPorcentajeAgregar.setText("Porcentaje:");
 
         txtCodigoProductoAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
 
@@ -319,6 +355,11 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
 
         txtDescripcionAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
 
+        lblExistenciaAgregar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        lblExistenciaAgregar.setText("Existencia:");
+
+        chkExistenciaAgregar.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
         javax.swing.GroupLayout pnlComponentesAgregarLayout = new javax.swing.GroupLayout(pnlComponentesAgregar);
         pnlComponentesAgregar.setLayout(pnlComponentesAgregarLayout);
         pnlComponentesAgregarLayout.setHorizontalGroup(
@@ -326,29 +367,34 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
             .addGroup(pnlComponentesAgregarLayout.createSequentialGroup()
                 .addGap(42, 42, 42)
                 .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel8))
+                    .addComponent(lblCodProductoAgregar)
+                    .addComponent(lblNombreProductoAgregar)
+                    .addComponent(lblMarcaAgregar)
+                    .addComponent(lblDescripcionAgregar)
+                    .addComponent(lblPrecioCompraAgregar)
+                    .addComponent(lblPrecioVentaAgregar)
+                    .addComponent(lblCantidadAgregar)
+                    .addComponent(lblPorcentajeAgregar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtCodigoProductoAgregar)
-                    .addComponent(txtNombreProductoAgregar)
-                    .addComponent(txtMarcaAgregar)
+                    .addGroup(pnlComponentesAgregarLayout.createSequentialGroup()
+                        .addComponent(numPorcentajeAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblExistenciaAgregar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(chkExistenciaAgregar))
+                    .addComponent(numPrecioVentaAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                    .addComponent(numPrecioCompraAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
                     .addComponent(txtDescripcionAgregar)
-                    .addComponent(numPrecioCompraAgregar)
-                    .addComponent(numPrecioVentaAgregar)
+                    .addComponent(txtMarcaAgregar)
+                    .addComponent(txtNombreProductoAgregar)
                     .addComponent(numCantidadAgregar)
-                    .addComponent(numPorcentajeAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
-                .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
-                    .addComponent(btnCancelarAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(txtCodigoProductoAgregar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnAgregar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCancelarAgregar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(63, 63, 63))
         );
         pnlComponentesAgregarLayout.setVerticalGroup(
             pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -357,41 +403,44 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
                 .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlComponentesAgregarLayout.createSequentialGroup()
                         .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
+                            .addComponent(lblCodProductoAgregar)
                             .addComponent(txtCodigoProductoAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
+                            .addComponent(lblNombreProductoAgregar)
                             .addComponent(txtNombreProductoAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
+                            .addComponent(lblMarcaAgregar)
                             .addComponent(txtMarcaAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
+                            .addComponent(lblDescripcionAgregar)
                             .addComponent(txtDescripcionAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
+                            .addComponent(lblPrecioCompraAgregar)
                             .addComponent(numPrecioCompraAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
+                            .addComponent(lblPrecioVentaAgregar)
                             .addComponent(numPrecioVentaAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(7, 7, 7)
                         .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
+                            .addComponent(lblCantidadAgregar)
                             .addComponent(numCantidadAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(numPorcentajeAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkExistenciaAgregar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnlComponentesAgregarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblPorcentajeAgregar)
+                                .addComponent(numPorcentajeAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblExistenciaAgregar))))
                     .addGroup(pnlComponentesAgregarLayout.createSequentialGroup()
                         .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancelarAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(99, Short.MAX_VALUE))
         );
 
         pnlAgregarProducto.add(pnlComponentesAgregar, java.awt.BorderLayout.CENTER);
@@ -406,13 +455,27 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
         pnlComponentesModificar.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
 
         numPorcentajeModificar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        numPorcentajeModificar.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 100.0d, 1.0d));
+        numPorcentajeModificar.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                numPorcentajeModificarStateChanged(evt);
+            }
+        });
 
         numCantidadModificar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
 
         numPrecioVentaModificar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        numPrecioVentaModificar.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 1.0E45d, 1.0d));
         numPrecioVentaModificar.setDoubleBuffered(true);
+        numPrecioVentaModificar.setEnabled(false);
 
         numPrecioCompraModificar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        numPrecioCompraModificar.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 1.0E46d, 1.0d));
+        numPrecioCompraModificar.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                numPrecioCompraModificarStateChanged(evt);
+            }
+        });
 
         btnCancelarModificar.setText("Cancelar");
         btnCancelarModificar.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
@@ -463,6 +526,18 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
 
         txtDescripcionModificar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
 
+        txtNumeroRegistro.setEditable(false);
+        txtNumeroRegistro.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel9.setText("N° Registro:");
+
+        lblExistenciaModificar.setBackground(new java.awt.Color(0, 0, 0));
+        lblExistenciaModificar.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        lblExistenciaModificar.setText("Existencia:");
+
+        chkExistenciaModificar.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
         javax.swing.GroupLayout pnlComponentesModificarLayout = new javax.swing.GroupLayout(pnlComponentesModificar);
         pnlComponentesModificar.setLayout(pnlComponentesModificarLayout);
         pnlComponentesModificarLayout.setHorizontalGroup(
@@ -477,18 +552,25 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
                     .addComponent(lblPrecioCompraModificar)
                     .addComponent(lblPrecioVentaModificar)
                     .addComponent(lblCantidadModificar)
-                    .addComponent(lblPorcentaje))
+                    .addComponent(lblPorcentaje)
+                    .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlComponentesModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtCodigoProductoModificar)
-                    .addComponent(txtNombreProductoModificar)
-                    .addComponent(txtMarcaModificar)
+                    .addGroup(pnlComponentesModificarLayout.createSequentialGroup()
+                        .addComponent(numPorcentajeModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblExistenciaModificar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkExistenciaModificar))
+                    .addComponent(numPrecioVentaModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                    .addComponent(numPrecioCompraModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
                     .addComponent(txtDescripcionModificar)
-                    .addComponent(numPrecioCompraModificar)
-                    .addComponent(numPrecioVentaModificar)
-                    .addComponent(numCantidadModificar)
-                    .addComponent(numPorcentajeModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
+                    .addComponent(txtMarcaModificar)
+                    .addComponent(txtNombreProductoModificar)
+                    .addComponent(txtCodigoProductoModificar)
+                    .addComponent(txtNumeroRegistro)
+                    .addComponent(numCantidadModificar, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 132, Short.MAX_VALUE)
                 .addGroup(pnlComponentesModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnModificar, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
                     .addComponent(btnCancelarModificar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -498,7 +580,13 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
             pnlComponentesModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlComponentesModificarLayout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(pnlComponentesModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNumeroRegistro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlComponentesModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnCancelarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlComponentesModificarLayout.createSequentialGroup()
                         .addGroup(pnlComponentesModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblCodigoProductoModificar)
@@ -528,14 +616,13 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
                             .addComponent(lblCantidadModificar)
                             .addComponent(numCantidadModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnlComponentesModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblPorcentaje)
-                            .addComponent(numPorcentajeModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(pnlComponentesModificarLayout.createSequentialGroup()
-                        .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancelarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(40, Short.MAX_VALUE))
+                        .addGroup(pnlComponentesModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkExistenciaModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnlComponentesModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblPorcentaje)
+                                .addComponent(numPorcentajeModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblExistenciaModificar)))))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         pnlModificarProductos.add(pnlComponentesModificar, java.awt.BorderLayout.CENTER);
@@ -550,6 +637,11 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
         tblRegistros.setBackground(new java.awt.Color(242, 242, 242));
         tblRegistros.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
         tblRegistros.setModel(modelo);
+        tblRegistros.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+                tblRegistrosComponentMoved(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblRegistros);
 
         javax.swing.GroupLayout pnlTablaRegistrosLayout = new javax.swing.GroupLayout(pnlTablaRegistros);
@@ -560,7 +652,7 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
         );
         pnlTablaRegistrosLayout.setVerticalGroup(
             pnlTablaRegistrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
         );
 
         tlbOpciones.setFloatable(false);
@@ -615,9 +707,9 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(pnlPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tlbOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tlbOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlTablaRegistros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -634,30 +726,34 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
         if (txtCodigoProductoAgregar.getText().equals("") && txtDescripcionAgregar.getText().equals("") && txtMarcaAgregar.getText().equals("") && txtNombreProductoAgregar.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Faltan datos importantes, por favor coriija para continuar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
         } else {
-            date = new Date();
-            DateFormat hourdateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            String fecha = hourdateFormat.format(date);
-            String existencia = "true";
-            double precioVenta = Double.parseDouble(numPrecioVentaAgregar.getValue().toString());
-            double precioCompra = Double.parseDouble(numPrecioCompraAgregar.getValue().toString());
-            int cantidad = Integer.parseInt(numCantidadAgregar.getValue().toString());
-            Inventario oInventario = new Inventario(txtCodigoProductoAgregar.getText(), txtNombreProductoAgregar.getText(), txtMarcaAgregar.getText(), txtDescripcionAgregar.getText(), precioCompra, precioVenta, existencia, cantidad, fecha);
-            oInventarioD.insertarProducto(oInventario);
-            if (oInventarioD.isError()) {
-                JOptionPane.showMessageDialog(null,
-                        "Error consultando a la base de datos, detalle técnico: " + oInventarioD.getErrorMsg(), "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                txtCodigoProductoAgregar.setText("");
-                txtDescripcionAgregar.setText("");
-                txtMarcaAgregar.setText("");
-                txtNombreProductoAgregar.setText("");
-                numCantidadAgregar.setValue(0);
-                numPorcentajeAgregar.setValue(0);
-                numPrecioCompraAgregar.setValue(0);
-                numPrecioVentaAgregar.setValue(0);
-                //this.refrescar();
-                JOptionPane.showMessageDialog(null,
-                        "Producto agregado con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                date = new Date();
+                DateFormat hourdateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                String fecha = hourdateFormat.format(date);
+                String existencia = "true";
+                double precioVenta = Double.parseDouble(numPrecioVentaAgregar.getValue().toString());
+                double precioCompra = Double.parseDouble(numPrecioCompraAgregar.getValue().toString());
+                int cantidad = Integer.parseInt(numCantidadAgregar.getValue().toString());
+                Inventario oInventario = new Inventario(1, txtCodigoProductoAgregar.getText(), txtNombreProductoAgregar.getText(), txtMarcaAgregar.getText(), txtDescripcionAgregar.getText(), precioCompra, precioVenta, existencia, cantidad, fecha);
+                oInventarioD.insertarProducto(oInventario);
+                if (oInventarioD.isError()) {
+                    JOptionPane.showMessageDialog(null,
+                            "Error consultando a la base de datos, detalle técnico: " + oInventarioD.getErrorMsg(), "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    txtCodigoProductoAgregar.setText("");
+                    txtDescripcionAgregar.setText("");
+                    txtMarcaAgregar.setText("");
+                    txtNombreProductoAgregar.setText("");
+                    numCantidadAgregar.setValue(0);
+                    numPorcentajeAgregar.setValue(0);
+                    numPrecioCompraAgregar.setValue(0);
+                    numPrecioVentaAgregar.setValue(0);
+                    this.refrescar();
+                    JOptionPane.showMessageDialog(null,
+                            "Producto agregado con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (NumberFormatException | HeadlessException xp) {
+                JOptionPane.showMessageDialog(null, "Error inesperado por parte de la aplicación. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnAgregarActionPerformed
@@ -667,17 +763,127 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        // TODO add your handling code here:
         refrescar();
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnCancelarModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarModificarActionPerformed
-        // TODO add your handling code here:
+        this.setVisible(false);
     }//GEN-LAST:event_btnCancelarModificarActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        // TODO add your handling code here:
+        if (txtNumeroRegistro.getText().equals("") || txtCodigoProductoModificar.getText().equals("") || txtDescripcionModificar.getText().equals("")
+                || txtMarcaModificar.getText().equals("") || txtNombreProductoModificar.getText().equals("") || numCantidadModificar.getValue().equals(0)
+                || numPorcentajeModificar.getValue().equals(0) || numPrecioCompraModificar.getValue().equals(0) || numPrecioVentaModificar.getValue().equals(0)) {
+            JOptionPane.showMessageDialog(null, "Faltan datos importantes, por favor corrija para continuar.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                Date date = new Date();
+                DateFormat hourdateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                String fecha = hourdateFormat.format(date);
+                String existencia;
+                double precioVenta = Double.parseDouble(numPrecioVentaModificar.getValue().toString());
+                double precioCompra = Double.parseDouble(numPrecioCompraModificar.getValue().toString());
+                int cantidad = Integer.parseInt(numCantidadModificar.getValue().toString());
+                if (chkExistenciaModificar.isSelected() == true) {
+                    existencia = "true";
+                } else {
+                    existencia = "false";
+                }
+                Inventario oInventario = new Inventario(
+                        Integer.parseInt(txtNumeroRegistro.getText()), txtCodigoProductoModificar.getText(),
+                        txtNombreProductoModificar.getText(), txtMarcaModificar.getText(), txtDescripcionModificar.getText(),
+                        precioCompra, precioVenta, existencia, cantidad, fecha
+                );
+                oInventarioD.actualizarProducto(oInventario, txtNumeroRegistro.getText());
+                if (oInventarioD.isError()) {
+                    JOptionPane.showMessageDialog(null,
+                            "Error al intentar modificar el producto, detalle técnico: " + oInventarioD.getErrorMsg(), "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Producto modificado con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                }
+                setVisible(false);
+            } catch (NumberFormatException | HeadlessException xp) {
+                JOptionPane.showMessageDialog(null, "Problema en algunos de los campos. Detalle técnico: " + xp.getMessage(), "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void tblRegistrosComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_tblRegistrosComponentMoved
+
+    }//GEN-LAST:event_tblRegistrosComponentMoved
+
+    private void numPrecioCompraAgregarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_numPrecioCompraAgregarStateChanged
+        // TODO add your handling code here:
+         /*
+         Este evento se encarga de calcular el precio de venta despues de
+         ingresar el porcentaje y el precio de compra
+         */
+        try {
+            if (Double.parseDouble(numPrecioCompraAgregar.getValue().toString()) < 0) {
+                numPrecioCompraAgregar.setValue(0);
+            } else {
+                double precioCompra = Double.parseDouble(numPrecioCompraAgregar.getValue().toString());
+                double porcentaje = Double.parseDouble(numPorcentajeAgregar.getValue().toString());
+                double precioVenta = precioCompra * ((100 + porcentaje) / 100);
+                numPrecioVentaAgregar.setValue(precioVenta);
+            }
+        } catch (Exception xp) {
+            JOptionPane.showMessageDialog(null, "Error al intentar calcular el porcentaje de venta. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_numPrecioCompraAgregarStateChanged
+
+    private void numPorcentajeAgregarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_numPorcentajeAgregarStateChanged
+        // TODO add your handling code here:
+        try {
+            if (Double.parseDouble(numPrecioCompraAgregar.getValue().toString()) < 0) {
+                numPrecioCompraAgregar.setValue(0);
+            } else {
+                double precioCompra = Double.parseDouble(numPrecioCompraAgregar.getValue().toString());
+                double porcentaje = Double.parseDouble(numPorcentajeAgregar.getValue().toString());
+                double precioVenta = precioCompra * ((100 + porcentaje) / 100);
+                numPrecioVentaAgregar.setValue(precioVenta);
+            }
+        } catch (Exception xp) {
+            JOptionPane.showMessageDialog(null, "Error al intentar calcular el porcentaje de venta. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_numPorcentajeAgregarStateChanged
+
+    private void numPrecioCompraModificarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_numPrecioCompraModificarStateChanged
+        // TODO add your handling code here:
+                /*
+         Este evento se encarga de calcular el precio de venta despues de
+         ingresar el porcentaje y el precio de compra
+         */
+        try {
+            if (Double.parseDouble(numPrecioCompraModificar.getValue().toString()) < 0) {
+                numPrecioCompraModificar.setValue(0);
+            } else {
+                double precioCompra = Double.parseDouble(numPrecioCompraModificar.getValue().toString());
+                double porcentaje = Double.parseDouble(numPorcentajeModificar.getValue().toString());
+                double precioVenta = precioCompra * ((100 + porcentaje) / 100);
+                numPrecioVentaModificar.setValue(precioVenta);
+            }
+        } catch (Exception xp) {
+            JOptionPane.showMessageDialog(null, "Error al intentar calcular el porcentaje de venta. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_numPrecioCompraModificarStateChanged
+
+    private void numPorcentajeModificarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_numPorcentajeModificarStateChanged
+        // TODO add your handling code here:
+        try {
+            if (Double.parseDouble(numPrecioCompraModificar.getValue().toString()) < 0) {
+                numPrecioCompraModificar.setValue(0);
+            } else {
+                double precioCompra = Double.parseDouble(numPrecioCompraModificar.getValue().toString());
+                double porcentaje = Double.parseDouble(numPorcentajeModificar.getValue().toString());
+                double precioVenta = precioCompra * ((100 + porcentaje) / 100);
+                numPrecioVentaModificar.setValue(precioVenta);
+            }
+        } catch (Exception xp) {
+            JOptionPane.showMessageDialog(null, "Error al intentar calcular el porcentaje de venta. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_numPorcentajeModificarStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -687,28 +893,33 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
     private org.edisoncor.gui.button.ButtonAction btnCancelarModificar;
     private org.edisoncor.gui.button.ButtonSeven btnEliminar;
     private org.edisoncor.gui.button.ButtonAction btnModificar;
+    private javax.swing.JCheckBox chkExistenciaAgregar;
+    private javax.swing.JCheckBox chkExistenciaModificar;
     private javax.swing.JComboBox cmbOpcionesBusquedaAgregar;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
+    private javax.swing.JLabel lblCantidadAgregar;
     private javax.swing.JLabel lblCantidadModificar;
+    private javax.swing.JLabel lblCodProductoAgregar;
     private javax.swing.JLabel lblCodigoProductoModificar;
+    private javax.swing.JLabel lblDescripcionAgregar;
     private javax.swing.JLabel lblDescripcionModificar;
+    private javax.swing.JLabel lblExistenciaAgregar;
+    private javax.swing.JLabel lblExistenciaModificar;
     private javax.swing.JLabel lblFiltrar;
+    private javax.swing.JLabel lblMarcaAgregar;
     private javax.swing.JLabel lblMarcaModificar;
+    private javax.swing.JLabel lblNombreProductoAgregar;
     private javax.swing.JLabel lblNombreProductoModificar;
     private javax.swing.JLabel lblOpcionesBusqueda;
     private javax.swing.JLabel lblPorcentaje;
+    private javax.swing.JLabel lblPorcentajeAgregar;
+    private javax.swing.JLabel lblPrecioCompraAgregar;
     private javax.swing.JLabel lblPrecioCompraModificar;
+    private javax.swing.JLabel lblPrecioVentaAgregar;
     private javax.swing.JLabel lblPrecioVentaModificar;
     private javax.swing.JSpinner numCantidadAgregar;
     private javax.swing.JSpinner numCantidadModificar;
@@ -727,7 +938,6 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
     private org.edisoncor.gui.tabbedPane.TabbedSelector2 tabAgregarProducto;
     private javax.swing.JTable tblRegistros;
     private javax.swing.JToolBar tlbOpciones;
-    private org.edisoncor.gui.varios.BarraTitle tleBarraTitulo;
     private javax.swing.JTextField txtCodigoProductoAgregar;
     private javax.swing.JTextField txtCodigoProductoModificar;
     private javax.swing.JTextField txtDescripcionAgregar;
@@ -737,5 +947,6 @@ public class frmControlTotalInventario extends javax.swing.JFrame {
     private javax.swing.JTextField txtMarcaModificar;
     private javax.swing.JTextField txtNombreProductoAgregar;
     private javax.swing.JTextField txtNombreProductoModificar;
+    private javax.swing.JTextField txtNumeroRegistro;
     // End of variables declaration//GEN-END:variables
 }

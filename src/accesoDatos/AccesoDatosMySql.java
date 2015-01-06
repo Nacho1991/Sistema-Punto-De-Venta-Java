@@ -194,6 +194,14 @@ public class AccesoDatosMySql {
         return baseDatos;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     /**
      * @return the servidor
      */

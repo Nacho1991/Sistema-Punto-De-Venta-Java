@@ -5,27 +5,16 @@
  */
 package vista;
 
+import TxtL.GestionTxt;
 import accesoDatos.*;
-import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import logica.Empleado;
-import org.edisoncor.gui.util.Avatar;
-import org.edisoncor.gui.util.WindowDragger;
-import org.edisoncor.gui.util.WindowsUtil;
-import org.edisoncor.gui.varios.BarraTitle;
 
 /**
  *
@@ -36,14 +25,12 @@ public class frmPrincipal extends javax.swing.JFrame {
     private AccesoDatosMySql cnx;
 
     public frmPrincipal(AccesoDatosMySql pCnx, ArrayList<Empleado> pEmpleadoLogueado) {
-        setUndecorated(true);
         initComponents();
-        lblDatoNombre.setText(pEmpleadoLogueado.get(0).getNombre() + " " + pEmpleadoLogueado.get(0).getApellidos());
+        this.setExtendedState(MAXIMIZED_BOTH);
+        lblDatoNombre.setText(pEmpleadoLogueado.get(0).getNombre());
         lblDatoNombreUsuario.setText(pEmpleadoLogueado.get(0).getNombreUsuario());
-        lblDatoUsuario.setText(pEmpleadoLogueado.get(0).getDepartamento());
+        lblDatoDepartamento.setText(pEmpleadoLogueado.get(0).getDepartamento());
         cnx = pCnx;
-        new WindowDragger(this, pnlPrincipal);
-        cloARelojAnalogico.setRomano(false);
         setLocationRelativeTo(null);
         asignarDescripcion();
     }
@@ -95,16 +82,6 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         pnlPrincipal = new org.edisoncor.gui.panel.PanelNice();
         pnlBackground = new org.edisoncor.gui.panel.PanelShadow();
-        pnlFooter = new org.edisoncor.gui.panel.PanelCurves();
-        cloARelojAnalogico = new org.edisoncor.gui.varios.ClockFace();
-        panelShadow2 = new org.edisoncor.gui.panel.PanelShadow();
-        lblNombre = new javax.swing.JLabel();
-        lblTipoUsuario = new javax.swing.JLabel();
-        lblNombreUsuario = new javax.swing.JLabel();
-        lblDatoNombre = new javax.swing.JLabel();
-        lblDatoUsuario = new javax.swing.JLabel();
-        lblDatoNombreUsuario = new javax.swing.JLabel();
-        tleBarraTitulo = new org.edisoncor.gui.varios.BarraTitle();
         tabPanePrincipal = new org.edisoncor.gui.tabbedPane.TabbedPaneHeader();
         pnlUsuariosTab = new org.edisoncor.gui.panel.PanelNice();
         lblRegistrarUsuarios = new org.edisoncor.gui.label.LabelTask();
@@ -144,75 +121,25 @@ public class frmPrincipal extends javax.swing.JFrame {
         lblAyuda = new org.edisoncor.gui.label.LabelTask();
         lblInformacion = new org.edisoncor.gui.label.LabelTask();
         jSeparator1 = new javax.swing.JSeparator();
+        jToolBar1 = new javax.swing.JToolBar();
+        jLabel1 = new javax.swing.JLabel();
+        lblDatoNombreUsuario = new javax.swing.JLabel();
+        jSeparator7 = new javax.swing.JToolBar.Separator();
+        jLabel2 = new javax.swing.JLabel();
+        lblDatoNombre = new javax.swing.JLabel();
+        jSeparator8 = new javax.swing.JToolBar.Separator();
+        jLabel3 = new javax.swing.JLabel();
+        lblDatoDepartamento = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Ventana Principal");
 
-        pnlPrincipal.setBackground(new java.awt.Color(153, 204, 255));
+        pnlPrincipal.setBackground(new java.awt.Color(240, 240, 240));
 
         pnlBackground.setBackground(new java.awt.Color(204, 204, 204));
 
-        pnlFooter.setBackground(new java.awt.Color(153, 204, 255));
-        pnlFooter.add(cloARelojAnalogico, java.awt.BorderLayout.LINE_END);
-
-        panelShadow2.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del empleado"));
-        panelShadow2.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-
-        lblNombre.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        lblNombre.setText("Nombre:");
-
-        lblTipoUsuario.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        lblTipoUsuario.setText("Usuario:");
-
-        lblNombreUsuario.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        lblNombreUsuario.setText("Nombre de usuario:");
-
-        lblDatoNombre.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        lblDatoNombre.setText("Sin registros");
-
-        lblDatoUsuario.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        lblDatoUsuario.setText("Sin registros");
-
-        lblDatoNombreUsuario.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        lblDatoNombreUsuario.setText("Sin registros");
-
-        javax.swing.GroupLayout panelShadow2Layout = new javax.swing.GroupLayout(panelShadow2);
-        panelShadow2.setLayout(panelShadow2Layout);
-        panelShadow2Layout.setHorizontalGroup(
-            panelShadow2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelShadow2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelShadow2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblNombreUsuario)
-                    .addComponent(lblTipoUsuario, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblNombre, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelShadow2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblDatoNombre)
-                    .addComponent(lblDatoUsuario)
-                    .addComponent(lblDatoNombreUsuario))
-                .addContainerGap(620, Short.MAX_VALUE))
-        );
-        panelShadow2Layout.setVerticalGroup(
-            panelShadow2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelShadow2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelShadow2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblNombre)
-                    .addComponent(lblDatoNombre))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelShadow2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTipoUsuario)
-                    .addComponent(lblDatoUsuario))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelShadow2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblNombreUsuario)
-                    .addComponent(lblDatoNombreUsuario))
-                .addContainerGap(48, Short.MAX_VALUE))
-        );
-
-        pnlFooter.add(panelShadow2, java.awt.BorderLayout.CENTER);
-
         tabPanePrincipal.setBackground(new java.awt.Color(153, 153, 255));
+        tabPanePrincipal.setToolTipText(""); // NOI18N
         tabPanePrincipal.setColorDeBorde(new java.awt.Color(204, 204, 204));
         tabPanePrincipal.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -224,13 +151,18 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblRegistrarUsuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Agregar_Cliente.png"))); // NOI18N
         lblRegistrarUsuarios.setText("Registrar usuarios");
-        lblRegistrarUsuarios.setToolTipText("");
+        lblRegistrarUsuarios.setToolTipText("Registrar usuarios");
         lblRegistrarUsuarios.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblRegistrarUsuarios.setOpaque(true);
+        lblRegistrarUsuarios.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblRegistrarUsuariosMouseClicked(evt);
+            }
+        });
 
         lblEditarUsuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Edit-Male-User.png"))); // NOI18N
         lblEditarUsuarios.setText("Editar usuarios");
-        lblEditarUsuarios.setToolTipText("");
+        lblEditarUsuarios.setToolTipText("Editar usuario");
         lblEditarUsuarios.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblEditarUsuarios.setOpaque(true);
         lblEditarUsuarios.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -241,9 +173,14 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblControlGeneralUsuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Control.png"))); // NOI18N
         lblControlGeneralUsuarios.setText("Control general de usuarios");
-        lblControlGeneralUsuarios.setToolTipText("");
+        lblControlGeneralUsuarios.setToolTipText("Control general");
         lblControlGeneralUsuarios.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblControlGeneralUsuarios.setOpaque(true);
+        lblControlGeneralUsuarios.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblControlGeneralUsuariosMouseClicked(evt);
+            }
+        });
 
         jSeparator6.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
@@ -273,11 +210,11 @@ public class frmPrincipal extends javax.swing.JFrame {
                         .addComponent(lblRegistrarUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(lblControlGeneralUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 174, Short.MAX_VALUE)))
+                        .addGap(0, 112, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
-        tabPanePrincipal.addTab("Usuarios", pnlUsuariosTab);
+        tabPanePrincipal.addTab("Usuarios", null, pnlUsuariosTab, "Usuarios");
 
         pnlInventarioTab.setBackground(new java.awt.Color(153, 153, 255));
 
@@ -285,7 +222,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblAgregarProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Add-Inventario.png"))); // NOI18N
         lblAgregarProductos.setText("Agregar productos");
-        lblAgregarProductos.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblAgregarProductos.setToolTipText("Agregar productos");
         lblAgregarProductos.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblAgregarProductos.setOpaque(true);
         lblAgregarProductos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -296,7 +233,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblEditarProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/edit.png"))); // NOI18N
         lblEditarProductos.setText("Editar productos");
-        lblEditarProductos.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblEditarProductos.setToolTipText("Editar productos");
         lblEditarProductos.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblEditarProductos.setOpaque(true);
         lblEditarProductos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -307,7 +244,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblControlGeneralProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Control.png"))); // NOI18N
         lblControlGeneralProductos.setText("Control general de productos");
-        lblControlGeneralProductos.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblControlGeneralProductos.setToolTipText("Control general");
         lblControlGeneralProductos.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblControlGeneralProductos.setOpaque(true);
         lblControlGeneralProductos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -320,7 +257,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblGeneradorCodigoBarras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Barcode-icon.png"))); // NOI18N
         lblGeneradorCodigoBarras.setText("Generador de código de barras");
-        lblGeneradorCodigoBarras.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblGeneradorCodigoBarras.setToolTipText("Código de barras");
         lblGeneradorCodigoBarras.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblGeneradorCodigoBarras.setOpaque(true);
         lblGeneradorCodigoBarras.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -358,13 +295,13 @@ public class frmPrincipal extends javax.swing.JFrame {
                         .addComponent(lblControlGeneralProductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(lblGeneradorCodigoBarras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 92, Short.MAX_VALUE)))
+                        .addGap(0, 30, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         pnlInventarioTab.add(pnlInventario, java.awt.BorderLayout.CENTER);
 
-        tabPanePrincipal.addTab("Inventario", pnlInventarioTab);
+        tabPanePrincipal.addTab("Inventario", null, pnlInventarioTab, "Inventario");
 
         pnlFacturacionTab.setBackground(new java.awt.Color(153, 153, 255));
 
@@ -372,7 +309,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblIniciarFacturacion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/cash-register-icon.png"))); // NOI18N
         lblIniciarFacturacion.setText("Iniciar facturación");
-        lblIniciarFacturacion.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblIniciarFacturacion.setToolTipText("Iniciar facturación");
         lblIniciarFacturacion.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblIniciarFacturacion.setOpaque(true);
         lblIniciarFacturacion.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -383,7 +320,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblVerFacturasPendientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/eye-32.png"))); // NOI18N
         lblVerFacturasPendientes.setText("Ver facturas pendientes");
-        lblVerFacturasPendientes.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblVerFacturasPendientes.setToolTipText("Ver pendientes");
         lblVerFacturasPendientes.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblVerFacturasPendientes.setOpaque(true);
         lblVerFacturasPendientes.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -394,7 +331,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblVerFacturasEmitidas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Player Next.png"))); // NOI18N
         lblVerFacturasEmitidas.setText("Ver facturas emitidas");
-        lblVerFacturasEmitidas.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblVerFacturasEmitidas.setToolTipText("Ver emitidas");
         lblVerFacturasEmitidas.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblVerFacturasEmitidas.setOpaque(true);
         lblVerFacturasEmitidas.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -431,19 +368,19 @@ public class frmPrincipal extends javax.swing.JFrame {
                         .addComponent(lblVerFacturasPendientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(lblVerFacturasEmitidas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 174, Short.MAX_VALUE)))
+                        .addGap(0, 112, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         pnlFacturacionTab.add(pnlFacturacion, java.awt.BorderLayout.CENTER);
 
-        tabPanePrincipal.addTab("Facturación", pnlFacturacionTab);
+        tabPanePrincipal.addTab("Facturación", null, pnlFacturacionTab, "Facturación");
 
         pnlClientesTab.setBackground(new java.awt.Color(153, 153, 255));
 
         lblControlGeneralClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Control.png"))); // NOI18N
         lblControlGeneralClientes.setText("Control general de clientes");
-        lblControlGeneralClientes.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblControlGeneralClientes.setToolTipText("Control general");
         lblControlGeneralClientes.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblControlGeneralClientes.setOpaque(true);
         lblControlGeneralClientes.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -454,7 +391,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblEditarClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/user_edit.png"))); // NOI18N
         lblEditarClientes.setText("Editar clientes");
-        lblEditarClientes.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblEditarClientes.setToolTipText("Editar clientes");
         lblEditarClientes.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblEditarClientes.setOpaque(true);
         lblEditarClientes.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -465,7 +402,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblAgregarClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/customer_add.png"))); // NOI18N
         lblAgregarClientes.setText("Agregar clientes");
-        lblAgregarClientes.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblAgregarClientes.setToolTipText("Registrar clientes");
         lblAgregarClientes.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblAgregarClientes.setOpaque(true);
         lblAgregarClientes.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -501,20 +438,20 @@ public class frmPrincipal extends javax.swing.JFrame {
                         .addComponent(lblEditarClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(lblControlGeneralClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 174, Short.MAX_VALUE))
+                        .addGap(0, 112, Short.MAX_VALUE))
                     .addComponent(jSeparator3, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
 
         pnlClientesTab.add(pnlClientes, java.awt.BorderLayout.CENTER);
 
-        tabPanePrincipal.addTab("Clientes", pnlClientesTab);
+        tabPanePrincipal.addTab("Clientes", null, pnlClientesTab, "Clientes");
 
         pnlSistemaTab.setBackground(new java.awt.Color(153, 153, 255));
 
         lblExportarRespaldo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/export.png"))); // NOI18N
         lblExportarRespaldo.setText("Exportar resplado");
-        lblExportarRespaldo.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblExportarRespaldo.setToolTipText("Exportar respaldo");
         lblExportarRespaldo.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblExportarRespaldo.setOpaque(true);
         lblExportarRespaldo.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -525,7 +462,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblImportarRespaldo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/download-database.png"))); // NOI18N
         lblImportarRespaldo.setText("Importar respaldo");
-        lblImportarRespaldo.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblImportarRespaldo.setToolTipText("Importar respaldo");
         lblImportarRespaldo.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblImportarRespaldo.setOpaque(true);
         lblImportarRespaldo.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -536,7 +473,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblHistorialInicioSesion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/History_clock.png"))); // NOI18N
         lblHistorialInicioSesion.setText("Historial de inicio de sesión");
-        lblHistorialInicioSesion.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblHistorialInicioSesion.setToolTipText("Historial de sesión");
         lblHistorialInicioSesion.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblHistorialInicioSesion.setOpaque(true);
         lblHistorialInicioSesion.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -547,7 +484,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblHistorialVentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/history-icon.png"))); // NOI18N
         lblHistorialVentas.setText("Historial de ventas");
-        lblHistorialVentas.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblHistorialVentas.setToolTipText("Historial de ventas");
         lblHistorialVentas.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblHistorialVentas.setOpaque(true);
         lblHistorialVentas.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -587,19 +524,19 @@ public class frmPrincipal extends javax.swing.JFrame {
                         .addComponent(lblExportarRespaldo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(lblImportarRespaldo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 92, Short.MAX_VALUE)))
+                        .addGap(0, 30, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         pnlSistemaTab.add(pnlSistema, java.awt.BorderLayout.CENTER);
 
-        tabPanePrincipal.addTab("Sistema", pnlSistemaTab);
+        tabPanePrincipal.addTab("Sistema", null, pnlSistemaTab, "Sistema");
 
         pnlInformacionTab.setBackground(new java.awt.Color(153, 153, 255));
 
         lblActivarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Security_Circle_Red.png"))); // NOI18N
         lblActivarProducto.setText("Activar producto");
-        lblActivarProducto.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblActivarProducto.setToolTipText("Activar producto");
         lblActivarProducto.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblActivarProducto.setOpaque(true);
         lblActivarProducto.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -610,7 +547,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblBuscarActualizaciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/actuality.png"))); // NOI18N
         lblBuscarActualizaciones.setText("Buscar actualizaciones");
-        lblBuscarActualizaciones.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblBuscarActualizaciones.setToolTipText("Buscar actualizaciones");
         lblBuscarActualizaciones.setColorDeSegundoBorde(new java.awt.Color(102, 102, 102));
         lblBuscarActualizaciones.setOpaque(true);
         lblBuscarActualizaciones.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -621,7 +558,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblAyuda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/help.png"))); // NOI18N
         lblAyuda.setText("Ayuda");
-        lblAyuda.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblAyuda.setToolTipText("Ayuda");
         lblAyuda.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblAyuda.setOpaque(true);
         lblAyuda.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -632,7 +569,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblInformacion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Informacion.png"))); // NOI18N
         lblInformacion.setText("Acerca de...");
-        lblInformacion.setToolTipText("Edita todos los registros encontrados en la base de datos");
+        lblInformacion.setToolTipText("Acerca de");
         lblInformacion.setColorDeSegundoBorde(new java.awt.Color(204, 204, 204));
         lblInformacion.setOpaque(true);
         lblInformacion.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -678,26 +615,53 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         pnlInformacionTab.add(pnlInformacion, java.awt.BorderLayout.CENTER);
 
-        tabPanePrincipal.addTab("Información", pnlInformacionTab);
+        tabPanePrincipal.addTab("Información", null, pnlInformacionTab, "Información");
+
+        jToolBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        jLabel1.setText("Nombre de usuario:");
+        jLabel1.setName(""); // NOI18N
+        jLabel1.setPreferredSize(new java.awt.Dimension(117, 14));
+        jToolBar1.add(jLabel1);
+
+        lblDatoNombreUsuario.setText("Sin registros");
+        jToolBar1.add(lblDatoNombreUsuario);
+
+        jSeparator7.setBackground(new java.awt.Color(0, 0, 0));
+        jToolBar1.add(jSeparator7);
+
+        jLabel2.setText("Cajero:");
+        jLabel2.setPreferredSize(new java.awt.Dimension(50, 14));
+        jToolBar1.add(jLabel2);
+
+        lblDatoNombre.setText("Sin registros");
+        jToolBar1.add(lblDatoNombre);
+
+        jSeparator8.setBackground(new java.awt.Color(0, 0, 0));
+        jToolBar1.add(jSeparator8);
+
+        jLabel3.setText("Departamento:");
+        jLabel3.setPreferredSize(new java.awt.Dimension(95, 14));
+        jToolBar1.add(jLabel3);
+
+        lblDatoDepartamento.setText("Sin registros");
+        jToolBar1.add(lblDatoDepartamento);
 
         javax.swing.GroupLayout pnlBackgroundLayout = new javax.swing.GroupLayout(pnlBackground);
         pnlBackground.setLayout(pnlBackgroundLayout);
         pnlBackgroundLayout.setHorizontalGroup(
             pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tleBarraTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(tabPanePrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBackgroundLayout.createSequentialGroup()
-                .addComponent(pnlFooter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pnlBackgroundLayout.setVerticalGroup(
             pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlBackgroundLayout.createSequentialGroup()
-                .addComponent(tleBarraTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tabPanePrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlFooter, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(151, 151, 151)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pnlPrincipal.add(pnlBackground, java.awt.BorderLayout.CENTER);
@@ -718,11 +682,13 @@ public class frmPrincipal extends javax.swing.JFrame {
 
     private void lblEditarUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblEditarUsuariosMouseClicked
         // TODO add your handling code here:
+        frmEditarEmpleado oEdit = new frmEditarEmpleado(this, rootPaneCheckingEnabled, cnx,lblDatoNombre.getText());
+        oEdit.setVisible(true);
     }//GEN-LAST:event_lblEditarUsuariosMouseClicked
 
     private void lblAgregarProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAgregarProductosMouseClicked
         // TODO add your handling code here:
-        frmAgregarProductoInventario oAdd = new frmAgregarProductoInventario(this, rootPaneCheckingEnabled, cnx);
+        frmAgregarProducto oAdd = new frmAgregarProducto(this, rootPaneCheckingEnabled, cnx);
         oAdd.setVisible(true);
     }//GEN-LAST:event_lblAgregarProductosMouseClicked
 
@@ -730,7 +696,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
         frmEditarProducto oEdit = new frmEditarProducto(this, rootPaneCheckingEnabled, cnx);
         oEdit.setVisible(true);
-        
+
     }//GEN-LAST:event_lblEditarProductosMouseClicked
 
     private void lblControlGeneralProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblControlGeneralProductosMouseClicked
@@ -740,7 +706,7 @@ public class frmPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_lblControlGeneralProductosMouseClicked
 
     private void lblIniciarFacturacionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblIniciarFacturacionMouseClicked
-        frmFacturacion oFacturacion = new frmFacturacion(this, rootPaneCheckingEnabled, cnx,lblDatoNombre.getText());
+        frmFacturacion oFacturacion = new frmFacturacion(this, rootPaneCheckingEnabled, cnx, lblDatoNombre.getText());
         oFacturacion.setVisible(true);
     }//GEN-LAST:event_lblIniciarFacturacionMouseClicked
 
@@ -798,21 +764,58 @@ public class frmPrincipal extends javax.swing.JFrame {
 
     private void lblGeneradorCodigoBarrasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblGeneradorCodigoBarrasMouseClicked
         // TODO add your handling code here:
+        GestionTxt oTxt = new GestionTxt();
+        oTxt.escrituraConexionTxt(
+                cnx.getServidor(), cnx.getPuerto(),
+                cnx.getBaseDatos(), cnx.getUsuario(),
+                cnx.getPassword(), cnx.getEsquema()
+        );
+        if (oTxt.isError()) {
+            JOptionPane.showMessageDialog(null, "Error al intentar abrir la aplicación. Detalle técnico: " + oTxt.getErrorDescripcion(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                File miDir = new File("C:\\Sistema Punto Venta\\frmCodigoBarras\\bin\\Debug\\");
+                if (miDir.exists()) {
+                    Process proceso = Runtime.getRuntime().exec("C:\\Sistema Punto Venta\\frmCodigoBarras\\bin\\Debug\\frmCodigoBarras.exe");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Problemas al intentar iniciar la aplicación, posible inexistencia de ésta herramienta.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception xp) {
+                JOptionPane.showMessageDialog(null, "Error al intentar ejecutar la aplicación. Detalle técnico: " + xp.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_lblGeneradorCodigoBarrasMouseClicked
 
     private void tabPanePrincipalStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabPanePrincipalStateChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_tabPanePrincipalStateChanged
 
+    private void lblRegistrarUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegistrarUsuariosMouseClicked
+        // TODO add your handling code here:
+        frmRegistrarEmpleado oRegistrar = new frmRegistrarEmpleado(this, rootPaneCheckingEnabled, cnx, lblDatoNombre.getText());
+        oRegistrar.setVisible(true);
+    }//GEN-LAST:event_lblRegistrarUsuariosMouseClicked
+
+    private void lblControlGeneralUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblControlGeneralUsuariosMouseClicked
+
+    }//GEN-LAST:event_lblControlGeneralUsuariosMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.edisoncor.gui.varios.ClockFace cloARelojAnalogico;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JToolBar.Separator jSeparator7;
+    private javax.swing.JToolBar.Separator jSeparator8;
+    private javax.swing.JToolBar jToolBar1;
     private org.edisoncor.gui.label.LabelTask lblActivarProducto;
     private org.edisoncor.gui.label.LabelTask lblAgregarClientes;
     private org.edisoncor.gui.label.LabelTask lblAgregarProductos;
@@ -821,9 +824,9 @@ public class frmPrincipal extends javax.swing.JFrame {
     private org.edisoncor.gui.label.LabelTask lblControlGeneralClientes;
     private org.edisoncor.gui.label.LabelTask lblControlGeneralProductos;
     private org.edisoncor.gui.label.LabelTask lblControlGeneralUsuarios;
+    private javax.swing.JLabel lblDatoDepartamento;
     private javax.swing.JLabel lblDatoNombre;
     private javax.swing.JLabel lblDatoNombreUsuario;
-    private javax.swing.JLabel lblDatoUsuario;
     private org.edisoncor.gui.label.LabelTask lblEditarClientes;
     private org.edisoncor.gui.label.LabelTask lblEditarProductos;
     private org.edisoncor.gui.label.LabelTask lblEditarUsuarios;
@@ -834,19 +837,14 @@ public class frmPrincipal extends javax.swing.JFrame {
     private org.edisoncor.gui.label.LabelTask lblImportarRespaldo;
     private org.edisoncor.gui.label.LabelTask lblInformacion;
     private org.edisoncor.gui.label.LabelTask lblIniciarFacturacion;
-    private javax.swing.JLabel lblNombre;
-    private javax.swing.JLabel lblNombreUsuario;
     private org.edisoncor.gui.label.LabelTask lblRegistrarUsuarios;
-    private javax.swing.JLabel lblTipoUsuario;
     private org.edisoncor.gui.label.LabelTask lblVerFacturasEmitidas;
     private org.edisoncor.gui.label.LabelTask lblVerFacturasPendientes;
-    private org.edisoncor.gui.panel.PanelShadow panelShadow2;
     private org.edisoncor.gui.panel.PanelShadow pnlBackground;
     private org.edisoncor.gui.panel.PanelShadow pnlClientes;
     private org.edisoncor.gui.panel.PanelNice pnlClientesTab;
     private org.edisoncor.gui.panel.PanelShadow pnlFacturacion;
     private org.edisoncor.gui.panel.PanelNice pnlFacturacionTab;
-    private org.edisoncor.gui.panel.PanelCurves pnlFooter;
     private org.edisoncor.gui.panel.PanelShadow pnlInformacion;
     private org.edisoncor.gui.panel.PanelNice pnlInformacionTab;
     private org.edisoncor.gui.panel.PanelShadow pnlInventario;
@@ -856,6 +854,5 @@ public class frmPrincipal extends javax.swing.JFrame {
     private org.edisoncor.gui.panel.PanelNice pnlSistemaTab;
     private org.edisoncor.gui.panel.PanelNice pnlUsuariosTab;
     private org.edisoncor.gui.tabbedPane.TabbedPaneHeader tabPanePrincipal;
-    private org.edisoncor.gui.varios.BarraTitle tleBarraTitulo;
     // End of variables declaration//GEN-END:variables
 }

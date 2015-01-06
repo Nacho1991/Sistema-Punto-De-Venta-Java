@@ -8,6 +8,7 @@ package appproyectoparqueo;
  *
  * @author MainorAlonso
  */
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,6 +24,14 @@ public class Config {
 
     public Config(String pRutaArchivo) throws IOException {
         configFile = new java.util.Properties();
+        File ruta = new File("C:\\Sistema Punto Venta\\Archivo configuración\\");
+        if (!ruta.exists()) {
+                try {
+                    ruta.mkdirs();
+                } catch (Exception xp) {
+                    JOptionPane.showMessageDialog(null, "Error al intentar crear el directorio. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         String fileName = pRutaArchivo;
         InputStream is = null;
         try {
@@ -67,6 +76,5 @@ public class Config {
     }
 
     public void escribirConfiguracion(String [] pPrarametros) {
-
     }
 }

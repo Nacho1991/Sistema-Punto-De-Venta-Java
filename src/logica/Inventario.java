@@ -3,18 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package logica;
-
-import java.sql.Date;
 
 /**
  *
  * @author ignacio
  */
 public class Inventario {
-    
-    private String codProducto;
+
+    private int id;
+    private String codigoArticulo;
     private String nombre;
     private String marca;
     private String descripcion;
@@ -24,8 +22,9 @@ public class Inventario {
     private int cantidad;
     private String fechaEntrada;
 
-    public Inventario(String pCodigo, String pNombre, String pMarca, String pDescripcion, double pPrecioCompra,double pPrecioVenta, String pExistencia,int pCantidad,String pFechaEntrada) {
-        this.codProducto = pCodigo;
+    public Inventario(int pId, String pCodigo, String pNombre, String pMarca, String pDescripcion, double pPrecioCompra, double pPrecioVenta, String pExistencia, int pCantidad, String pFechaEntrada) {
+        this.id = pId;
+        this.codigoArticulo = pCodigo;
         this.nombre = pNombre;
         this.marca = pMarca;
         this.descripcion = pDescripcion;
@@ -36,12 +35,20 @@ public class Inventario {
         this.fechaEntrada = pFechaEntrada;
     }
 
-    public String getCodProducto() {
-        return codProducto;
+    public int getId() {
+        return id;
     }
 
-    public void setCodProducto(String codProducto) {
-        this.codProducto = codProducto;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCodigoArticulo() {
+        return codigoArticulo;
+    }
+
+    public void setCodigoArticulo(String codigoArticulo) {
+        this.codigoArticulo = codigoArticulo;
     }
 
     public String getNombre() {
@@ -107,5 +114,5 @@ public class Inventario {
     public void setFechaEntrada(String fechaEntrada) {
         this.fechaEntrada = fechaEntrada;
     }
-    
+
 }

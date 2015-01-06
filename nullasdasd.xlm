@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Pedidos>
+<Pedido>
+<Cliente>
+<Cedula/>
+<Nombre/>
+<Dirección/>
+<Telefono/>
+<TipoCliente>Contado</TipoCliente>
+</Cliente>
+<Productos>
+<Producto>
+<Código>04815590313</Código>
+<Descripción>Crema Para El Cuerpo Personal Care 226 grms</Descripción>
+<Cantidad>1</Cantidad>
+<Disponible>true</Disponible>
+<PrecioUnitario>675.0</PrecioUnitario>
+<PrecioTotal>675.0</PrecioTotal>
+</Producto>
+</Productos>
+</Pedido>
+</Pedidos>
+

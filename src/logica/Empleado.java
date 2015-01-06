@@ -11,46 +11,151 @@ package logica;
  */
 public class Empleado {
 
+    private int id;
     private String cedula;
-    private String Nombre;
-    private String Apellidos;
-    private String fechaNacimiento;
+    private String nombre;
+    private String direccion;
     private String telefono;
     private String celular;
+    private String fechaNacimiento;
+    private String departamento;
     private String edad;
     private String sexo;
-    private String nombreUsuario;
-    private String contrasenna;
-    private String dirFotoPerfil;
     private String email;
     private String fechaCreacion;
-    private String fechaModific;
+    private String fechaModificion;
     private String creadoPor;
     private String modificadoPor;
-    private String departamento;
 
-    public Empleado(String cedula, String Nombre, String Apellidos, String fechaNacimiento, String telefono, String celular, String edad, String sexo, String nombreUsuario, String contrasenna, String dirFotoPerfil, String email, String fechaCreacion, String fechaModific, String creadoPor, String modificadoPor, String departamento) {
+    private String nombreUsuario;
+    private String contrasenna;
+
+    private String adminClientes;
+    private String adminInventario;
+    private String adminFacturas;
+    private String adminEmpleados;
+    private String adminCajas;
+
+    public Empleado() {
+    }
+
+    public void obtenerDatosAccesoSistema(
+            int pId, String pCedula, String pNombreUsuario, String pContrasenna
+    ) {
+        id = pId;
+        cedula = pCedula;
+        nombreUsuario = pNombreUsuario;
+        contrasenna = pContrasenna;
+    }
+
+    public void obtenerInicioSession(
+            String pCedula, String pNombre, String pDepartamento,
+            String pNombreUsuario, String pContrasenna) {
+        cedula = pCedula;
+        nombre = pNombre;
+        departamento = pDepartamento;
+        nombreUsuario = pNombreUsuario;
+        contrasenna = pContrasenna;
+    }
+
+    public void obtenerPrivilegios(
+            int pId, String pCedula,
+            String pAdminClientes, String pAdminInventario,
+            String pAdminFacturas, String pAdminEmpleados,
+            String pAdminCajas) {
+        id = pId;
+        cedula = pCedula;
+        adminCajas = pAdminCajas;
+        adminInventario = pAdminInventario;
+        adminFacturas = pAdminFacturas;
+        adminEmpleados = pAdminEmpleados;
+        adminClientes = pAdminClientes;
+
+    }
+    public void registrarPrivilegios( String pCedula,
+            String pAdminClientes, String pAdminInventario,
+            String pAdminFacturas, String pAdminEmpleados,
+            String pAdminCajas) {
+        cedula = pCedula;
+        adminCajas = pAdminCajas;
+        adminInventario = pAdminInventario;
+        adminFacturas = pAdminFacturas;
+        adminEmpleados = pAdminEmpleados;
+        adminClientes = pAdminClientes;
+
+    }
+
+    public Empleado(
+            int id, String cedula, String nombre, String direccion,
+            String telefono, String celular, String fechaNacimiento,
+            String departamento, String edad, String sexo, String email,
+            String fechaCreacion, String fechaModificion, String creadoPor,
+            String modificadoPor, String nombreUsuario, String contrasenna) {
+        this.id = id;
         this.cedula = cedula;
-        this.Nombre = Nombre;
-        this.Apellidos = Apellidos;
-        this.fechaNacimiento = fechaNacimiento;
+        this.nombre = nombre;
+        this.direccion = direccion;
         this.telefono = telefono;
         this.celular = celular;
+        this.fechaNacimiento = fechaNacimiento;
+        this.departamento = departamento;
         this.edad = edad;
         this.sexo = sexo;
-        this.nombreUsuario = nombreUsuario;
-        this.contrasenna = contrasenna;
-        this.dirFotoPerfil = dirFotoPerfil;
         this.email = email;
         this.fechaCreacion = fechaCreacion;
-        this.fechaModific = fechaModific;
+        this.fechaModificion = fechaModificion;
         this.creadoPor = creadoPor;
         this.modificadoPor = modificadoPor;
+        this.nombreUsuario = nombreUsuario;
+        this.contrasenna = contrasenna;
+    }
+
+    public Empleado(String pCedula,String pNombreUsuario, String pContrasenna) {
+        cedula=pCedula;
+        nombreUsuario = pNombreUsuario;
+        contrasenna = pContrasenna;
+    }
+
+    public Empleado(String cedula, String nombre, String direccion,
+            String telefono, String celular, String fechaNacimiento,
+            String departamento, String edad, String sexo, String email,
+            String fechaCreacion, String fechaModificion, String creadoPor,
+            String modificadoPor, String nombreUsuario, String contrasenna,
+            String adminClientes, String adminInventario, String adminFacturas,
+            String adminEmpleados, String adminCajas) {
+        this.cedula = cedula;
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.telefono = telefono;
+        this.celular = celular;
+        this.fechaNacimiento = fechaNacimiento;
         this.departamento = departamento;
+        this.edad = edad;
+        this.sexo = sexo;
+        this.email = email;
+        this.fechaCreacion = fechaCreacion;
+        this.fechaModificion = fechaModificion;
+        this.creadoPor = creadoPor;
+        this.modificadoPor = modificadoPor;
+        this.nombreUsuario = nombreUsuario;
+        this.contrasenna = contrasenna;
+        this.adminClientes = adminClientes;
+        this.adminInventario = adminInventario;
+        this.adminFacturas = adminFacturas;
+        this.adminEmpleados = adminEmpleados;
+        this.adminCajas = adminCajas;
     }
 
     public String getCedula() {
         return cedula;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setCedula(String cedula) {
@@ -58,19 +163,11 @@ public class Empleado {
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String Nombre) {
-        this.Nombre = Nombre;
-    }
-
-    public String getApellidos() {
-        return Apellidos;
-    }
-
-    public void setApellidos(String Apellidos) {
-        this.Apellidos = Apellidos;
+        this.nombre = Nombre;
     }
 
     public String getFechaNacimiento() {
@@ -129,14 +226,6 @@ public class Empleado {
         this.contrasenna = contrasenna;
     }
 
-    public String getDirFotoPerfil() {
-        return dirFotoPerfil;
-    }
-
-    public void setDirFotoPerfil(String dirFotoPerfil) {
-        this.dirFotoPerfil = dirFotoPerfil;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -153,12 +242,12 @@ public class Empleado {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public String getFechaModific() {
-        return fechaModific;
+    public String getFechaModificion() {
+        return fechaModificion;
     }
 
-    public void setFechaModific(String fechaModific) {
-        this.fechaModific = fechaModific;
+    public void setFechaModificion(String fechaModificion) {
+        this.fechaModificion = fechaModificion;
     }
 
     public String getCreadoPor() {
@@ -183,6 +272,54 @@ public class Empleado {
 
     public void setDepartamento(String departamento) {
         this.departamento = departamento;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getAdminClientes() {
+        return adminClientes;
+    }
+
+    public void setAdminClientes(String adminClientes) {
+        this.adminClientes = adminClientes;
+    }
+
+    public String getAdminInventario() {
+        return adminInventario;
+    }
+
+    public void setAdminInventario(String adminInventario) {
+        this.adminInventario = adminInventario;
+    }
+
+    public String getAdminFacturas() {
+        return adminFacturas;
+    }
+
+    public void setAdminFacturas(String adminFacturas) {
+        this.adminFacturas = adminFacturas;
+    }
+
+    public String getAdminEmpleados() {
+        return adminEmpleados;
+    }
+
+    public void setAdminEmpleados(String adminEmpleados) {
+        this.adminEmpleados = adminEmpleados;
+    }
+
+    public String getAdminCajas() {
+        return adminCajas;
+    }
+
+    public void setAdminCajas(String adminCajas) {
+        this.adminCajas = adminCajas;
     }
 
 }

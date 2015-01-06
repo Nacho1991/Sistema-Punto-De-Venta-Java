@@ -5,23 +5,20 @@
  */
 package vista;
 
+import Utilidades.Utilidades;
 import accesoDatos.AccesoDatosMySql;
 import accesoDatos.EmpleadoD;
-import accesoDatos.InventarioD;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import logica.Empleado;
 import org.edisoncor.gui.util.WindowDragger;
 import org.edisoncor.gui.util.WindowsUtil;
-import org.hyperic.sigar.*;
 
 /**
  *
@@ -30,15 +27,17 @@ import org.hyperic.sigar.*;
 public class frmLogin extends javax.swing.JFrame {
 
     AccesoDatosMySql cnx;
+    Utilidades oEncriptar;
     static List<Empleado> login;
     private EmpleadoD oEmpleadoD;
 
     public frmLogin(AccesoDatosMySql pCnx) {
-        
+
         cnx = pCnx;
         oEmpleadoD = new EmpleadoD(cnx);
         setUndecorated(true);
         initComponents();
+        oEncriptar = new Utilidades();
         txtContrasenna.setHorizontalAlignment(JTextField.CENTER);
         txtNombreUsuario.setHorizontalAlignment(JTextField.CENTER);
         WindowsUtil.makeWindowsShape(this, pnlBackground.getShape());
@@ -50,8 +49,9 @@ public class frmLogin extends javax.swing.JFrame {
             }
         });
         setLocationRelativeTo(null);
-        
+
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -86,22 +86,24 @@ public class frmLogin extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Iniciar sesion");
         setBackground(new java.awt.Color(255, 255, 255));
 
-        pnlBackground.setBackground(new java.awt.Color(204, 204, 255));
+        pnlBackground.setBackground(new java.awt.Color(240, 240, 240));
         pnlBackground.setBorderColor(new java.awt.Color(0, 0, 0));
 
         pnlContenedor.setBackground(new java.awt.Color(153, 153, 255));
+        pnlContenedor.setForeground(new java.awt.Color(240, 240, 240));
 
         panelCurves1.setBackground(new java.awt.Color(153, 153, 255));
         panelCurves1.setRequestFocusEnabled(false);
 
         pnlCabecera.setBackground(new java.awt.Color(153, 153, 255));
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
         jLabel3.setText("Acceso");
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
         jLabel4.setText("Por favor ingrese el nombre de usuario y la contraseña");
 
         javax.swing.GroupLayout pnlCabeceraLayout = new javax.swing.GroupLayout(pnlCabecera);
@@ -121,7 +123,7 @@ public class frmLogin extends javax.swing.JFrame {
         pnlCabeceraLayout.setVerticalGroup(
             pnlCabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlCabeceraLayout.createSequentialGroup()
-                .addContainerGap(14, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel4)
@@ -131,6 +133,7 @@ public class frmLogin extends javax.swing.JFrame {
         panelCurves1.add(pnlCabecera, java.awt.BorderLayout.CENTER);
 
         txtContrasenna.setText("1");
+        txtContrasenna.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
         txtContrasenna.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtContrasennaActionPerformed(evt);
@@ -138,9 +141,11 @@ public class frmLogin extends javax.swing.JFrame {
         });
 
         txtNombreUsuario.setText("Nacho");
+        txtNombreUsuario.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
 
-        btnIniciarSesion.setBackground(new java.awt.Color(0, 153, 153));
+        btnIniciarSesion.setBackground(new java.awt.Color(204, 204, 204));
         btnIniciarSesion.setText("Iniciar sesión");
+        btnIniciarSesion.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 18)); // NOI18N
         btnIniciarSesion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnIniciarSesionActionPerformed(evt);
@@ -152,18 +157,22 @@ public class frmLogin extends javax.swing.JFrame {
             }
         });
 
-        btnSalir.setBackground(new java.awt.Color(0, 153, 153));
+        btnSalir.setBackground(new java.awt.Color(204, 204, 204));
         btnSalir.setText("Salir");
+        btnSalir.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 18)); // NOI18N
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSalirActionPerformed(evt);
             }
         });
 
+        chkMostrarCaracteres.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
         chkMostrarCaracteres.setText("Mostrar caracteres");
 
+        lblNombreUsuario.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
         lblNombreUsuario.setText("Nombre de usuario:");
 
+        lblContrasenna.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
         lblContrasenna.setText("Contraseña:");
 
         javax.swing.GroupLayout pnlContenedorLayout = new javax.swing.GroupLayout(pnlContenedor);
@@ -173,7 +182,7 @@ public class frmLogin extends javax.swing.JFrame {
             .addComponent(panelCurves1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(pnlContenedorLayout.createSequentialGroup()
                 .addGap(61, 61, 61)
-                .addComponent(btnIniciarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnIniciarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(68, 68, 68))
@@ -197,7 +206,7 @@ public class frmLogin extends javax.swing.JFrame {
             pnlContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlContenedorLayout.createSequentialGroup()
                 .addComponent(panelCurves1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addGroup(pnlContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblNombreUsuario))
@@ -236,7 +245,7 @@ public class frmLogin extends javax.swing.JFrame {
         if (nombreUsuario.equals("") || contrasenna.equals("")) {
             JOptionPane.showMessageDialog(null, "Faltan datos importantes, por favor coriija para iniciar sesión.", "Advertencia", JOptionPane.WARNING_MESSAGE);
         } else {
-            login = oEmpleadoD.iniciarSesion(nombreUsuario, contrasenna);
+            login = oEmpleadoD.iniciarSesion(nombreUsuario,contrasenna);
             if (oEmpleadoD.isError()) {
                 JOptionPane.showMessageDialog(null, "Error inesperado al intentar iniciar sesión. Detalle técnico: " + oEmpleadoD.getErrorMsg(), "Advertencia", JOptionPane.WARNING_MESSAGE);
             } else if (login.size() == 1) {

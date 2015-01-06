@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
+    <Property name="title" type="java.lang.String" value="Controlador total de inventario"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -31,9 +32,9 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="pnlPrincipal" min="-2" pref="403" max="-2" attributes="0"/>
+              <Component id="pnlPrincipal" min="-2" pref="430" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="tlbOpciones" min="-2" pref="47" max="-2" attributes="0"/>
+              <Component id="tlbOpciones" min="-2" pref="32" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="pnlTablaRegistros" max="32767" attributes="0"/>
           </Group>
@@ -50,13 +51,6 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
       <SubComponents>
-        <Component class="org.edisoncor.gui.varios.BarraTitle" name="tleBarraTitulo">
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-              <BorderConstraints direction="First"/>
-            </Constraint>
-          </Constraints>
-        </Component>
         <Container class="org.edisoncor.gui.tabbedPane.TabbedSelector2" name="tabAgregarProducto">
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -70,6 +64,9 @@
             </Property>
             <Property name="colorDeSegundoBorde" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="1" green="1" red="1" type="rgb"/>
+            </Property>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Microsoft Sans Serif" size="18" style="0"/>
             </Property>
             <Property name="listColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="1" green="1" red="1" type="rgb"/>
@@ -134,32 +131,38 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="jLabel1" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel2" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel3" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel4" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel5" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel6" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel7" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel8" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblCodProductoAgregar" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblNombreProductoAgregar" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblMarcaAgregar" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblDescripcionAgregar" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblPrecioCompraAgregar" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblPrecioVentaAgregar" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblCantidadAgregar" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblPorcentajeAgregar" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="numPorcentajeAgregar" min="-2" pref="88" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="lblExistenciaAgregar" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="chkExistenciaAgregar" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="numPrecioVentaAgregar" alignment="0" pref="306" max="32767" attributes="0"/>
+                                  <Component id="numPrecioCompraAgregar" alignment="0" pref="0" max="32767" attributes="0"/>
+                                  <Component id="txtDescripcionAgregar" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txtMarcaAgregar" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txtNombreProductoAgregar" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="numCantidadAgregar" alignment="0" max="32767" attributes="0"/>
                                   <Component id="txtCodigoProductoAgregar" max="32767" attributes="0"/>
-                                  <Component id="txtNombreProductoAgregar" max="32767" attributes="0"/>
-                                  <Component id="txtMarcaAgregar" max="32767" attributes="0"/>
-                                  <Component id="txtDescripcionAgregar" max="32767" attributes="0"/>
-                                  <Component id="numPrecioCompraAgregar" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="numPrecioVentaAgregar" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="numCantidadAgregar" max="32767" attributes="0"/>
-                                  <Component id="numPorcentajeAgregar" alignment="0" min="-2" pref="308" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="125" max="32767" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="btnAgregar" pref="135" max="32767" attributes="0"/>
-                                  <Component id="btnCancelarAgregar" max="32767" attributes="0"/>
+                              <EmptySpace pref="76" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="btnAgregar" alignment="1" min="-2" pref="135" max="-2" attributes="0"/>
+                                  <Component id="btnCancelarAgregar" alignment="1" min="-2" pref="135" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -170,43 +173,47 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="lblCodProductoAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="txtCodigoProductoAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="lblNombreProductoAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="txtNombreProductoAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="lblMarcaAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="txtMarcaAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="lblDescripcionAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="txtDescripcionAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="lblPrecioCompraAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="numPrecioCompraAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="lblPrecioVentaAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="numPrecioVentaAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="lblCantidadAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="numCantidadAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          <Component id="numPorcentajeAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="chkExistenciaAgregar" alignment="1" min="-2" pref="30" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="lblPorcentajeAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="numPorcentajeAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="lblExistenciaAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
                                       </Group>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
@@ -215,7 +222,7 @@
                                       <Component id="btnCancelarAgregar" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="99" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -226,7 +233,13 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
                         </Property>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="0.0" maximum="100.0" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
+                        </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="numPorcentajeAgregarStateChanged"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JSpinner" name="numCantidadAgregar">
                       <Properties>
@@ -240,7 +253,11 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
                         </Property>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="0.0" maximum="2.147483647E9" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
+                        </Property>
                         <Property name="doubleBuffered" type="boolean" value="true"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JSpinner" name="numPrecioCompraAgregar">
@@ -248,7 +265,13 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
                         </Property>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="0.0" maximum="1.0E26" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
+                        </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="numPrecioCompraAgregarStateChanged"/>
+                      </Events>
                     </Component>
                     <Component class="org.edisoncor.gui.button.ButtonAction" name="btnCancelarAgregar">
                       <Properties>
@@ -272,7 +295,7 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAgregarActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel1">
+                    <Component class="javax.swing.JLabel" name="lblCodProductoAgregar">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="fe" green="fe" red="fe" type="rgb"/>
@@ -283,7 +306,7 @@
                         <Property name="text" type="java.lang.String" value="C&#xf3;digo del producto:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel2">
+                    <Component class="javax.swing.JLabel" name="lblNombreProductoAgregar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
@@ -291,7 +314,7 @@
                         <Property name="text" type="java.lang.String" value="Nombre del producto:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel3">
+                    <Component class="javax.swing.JLabel" name="lblMarcaAgregar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
@@ -299,7 +322,7 @@
                         <Property name="text" type="java.lang.String" value="Marca:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel4">
+                    <Component class="javax.swing.JLabel" name="lblDescripcionAgregar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
@@ -307,7 +330,7 @@
                         <Property name="text" type="java.lang.String" value="Descripci&#xf3;n:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel5">
+                    <Component class="javax.swing.JLabel" name="lblPrecioCompraAgregar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
@@ -315,7 +338,7 @@
                         <Property name="text" type="java.lang.String" value="Precio de compra:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel6">
+                    <Component class="javax.swing.JLabel" name="lblPrecioVentaAgregar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
@@ -323,7 +346,7 @@
                         <Property name="text" type="java.lang.String" value="Precio de venta:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel7">
+                    <Component class="javax.swing.JLabel" name="lblCantidadAgregar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
@@ -331,7 +354,7 @@
                         <Property name="text" type="java.lang.String" value="Cantidad:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel8">
+                    <Component class="javax.swing.JLabel" name="lblPorcentajeAgregar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
@@ -364,6 +387,21 @@
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="lblExistenciaAgregar">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Ubuntu" size="18" style="0"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Existencia:"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="chkExistenciaAgregar">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Tahoma" size="18" style="0"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -421,19 +459,27 @@
                                   <Component id="lblPrecioVentaModificar" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="lblCantidadModificar" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="lblPorcentaje" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="txtCodigoProductoModificar" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="txtNombreProductoModificar" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="txtMarcaModificar" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="numPorcentajeModificar" min="-2" pref="76" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="lblExistenciaModificar" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="chkExistenciaModificar" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="numPrecioVentaModificar" alignment="0" pref="0" max="32767" attributes="0"/>
+                                  <Component id="numPrecioCompraModificar" alignment="0" pref="0" max="32767" attributes="0"/>
                                   <Component id="txtDescripcionModificar" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="numPrecioCompraModificar" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="numPrecioVentaModificar" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="numCantidadModificar" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="numPorcentajeModificar" alignment="0" min="-2" pref="308" max="-2" attributes="0"/>
+                                  <Component id="txtMarcaModificar" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txtNombreProductoModificar" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txtCodigoProductoModificar" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txtNumeroRegistro" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="numCantidadModificar" alignment="0" pref="305" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="127" max="32767" attributes="0"/>
+                              <EmptySpace pref="132" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="btnModificar" pref="133" max="32767" attributes="0"/>
                                   <Component id="btnCancelarModificar" max="32767" attributes="0"/>
@@ -446,8 +492,15 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="btnModificar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtNumeroRegistro" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="0" attributes="0">
+                                  <Component id="btnCancelarModificar" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
                                       <Group type="103" groupAlignment="3" attributes="0">
                                           <Component id="lblCodigoProductoModificar" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="txtCodigoProductoModificar" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -483,18 +536,17 @@
                                           <Component id="numCantidadModificar" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="lblPorcentaje" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          <Component id="numPorcentajeModificar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="chkExistenciaModificar" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="lblPorcentaje" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="numPorcentajeModificar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="lblExistenciaModificar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
                                       </Group>
                                   </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="btnModificar" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="btnCancelarModificar" min="-2" max="-2" attributes="0"/>
-                                  </Group>
                               </Group>
-                              <EmptySpace pref="40" max="32767" attributes="0"/>
+                              <EmptySpace pref="58" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -505,7 +557,13 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
                         </Property>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="0.0" maximum="100.0" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
+                        </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="numPorcentajeModificarStateChanged"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JSpinner" name="numCantidadModificar">
                       <Properties>
@@ -519,7 +577,11 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
                         </Property>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="0.0" maximum="1.0E45" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
+                        </Property>
                         <Property name="doubleBuffered" type="boolean" value="true"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JSpinner" name="numPrecioCompraModificar">
@@ -527,7 +589,13 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Ubuntu" size="18" style="0"/>
                         </Property>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="0.0" maximum="1.0E46" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
+                        </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="numPrecioCompraModificarStateChanged"/>
+                      </Events>
                     </Component>
                     <Component class="org.edisoncor.gui.button.ButtonAction" name="btnCancelarModificar">
                       <Properties>
@@ -646,6 +714,40 @@
                         </Property>
                       </Properties>
                     </Component>
+                    <Component class="javax.swing.JTextField" name="txtNumeroRegistro">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Tahoma" size="18" style="0"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel9">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Tahoma" size="18" style="0"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="N&#xb0; Registro:"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="lblExistenciaModificar">
+                      <Properties>
+                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="0" green="0" red="0" type="rgb"/>
+                        </Property>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Ubuntu" size="18" style="0"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Existencia:"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="chkExistenciaModificar">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Tahoma" size="18" style="0"/>
+                        </Property>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>
@@ -674,7 +776,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jScrollPane1" alignment="1" pref="301" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" alignment="1" pref="289" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -698,6 +800,9 @@
                   <Connection code="modelo" type="code"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="componentMoved" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="tblRegistrosComponentMoved"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

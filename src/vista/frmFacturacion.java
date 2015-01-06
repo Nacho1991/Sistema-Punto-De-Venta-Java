@@ -5,59 +5,55 @@
  */
 package vista;
 
-import ImpresoraD.Factura;
-import ImpresoraD.MaestroFactura;
-import ImpresoraD.Producto;
-import ImpresoraL.Impresion;
-import ImpresoraL.Matematicas;
-import XmlD.Pedido;
+import ImpresoraD.*;
+import ImpresoraL.*;
 import XmlL.GuardarPendientes;
-import accesoDatos.AccesoDatosMySql;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+import accesoDatos.*;
+import java.awt.event.*;
+import java.util.*;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
+import javax.swing.event.*;
 import javax.swing.table.DefaultTableModel;
-import logica.Inventario;
-import org.edisoncor.gui.util.WindowDragger;
+import logica.*;
 
 /**
  *
  * @author Ignacio
  */
-public class frmFacturacion extends javax.swing.JFrame {
+public class frmFacturacion extends javax.swing.JFrame implements KeyListener {
 
     AccesoDatosMySql cnx;
+    private final InventarioD oInventarioD;
+    private final FacturacionD oFacturacionD;
     Calendar fecha = new GregorianCalendar();
     private String[] cabeceras = {"Código", "Descripción", "Cantidad", "Disponible", "Precio unitario", "Precio total"};
     private String[][] datos = new String[0][5];
-    private int descuento;
-    private int pago;
-    private int cambio;
+    private double descuento;
+    private double pago;
+    private double cambio;
 
-    public frmFacturacion(java.awt.Frame parent, boolean modal, AccesoDatosMySql pCnx,String pNombreVendedor) {
-        setUndecorated(true);
+    public frmFacturacion(
+            java.awt.Frame parent,
+            boolean modal,
+            AccesoDatosMySql pCnx,
+            String pNombreVendedor) {
         initComponents();
         fecha = new GregorianCalendar();
         establecerFecha();
         txtNombreVendedor.setText(pNombreVendedor);
         cnx = pCnx;
+        oInventarioD = new InventarioD(pCnx);
+        oFacturacionD = new FacturacionD(pCnx);
         pago = 0;
+        this.setExtendedState(MAXIMIZED_BOTH);
         descuento = 0;
         refrescar();
-        new WindowDragger(this, pnlBackground);
+        obtnerNumeroFactura();
         eventoChangeTable();
-        WindowDragger w = new WindowDragger(this, tleBarraTitulo);
-        setLocationRelativeTo(null);
+        addKeyListener(this);
     }
 
-    public int getDescuento() {
+    public double getDescuento() {
         return descuento;
     }
 
@@ -65,7 +61,7 @@ public class frmFacturacion extends javax.swing.JFrame {
         this.descuento = descuento;
     }
 
-    public int getPago() {
+    public double getPago() {
         return pago;
     }
 
@@ -73,7 +69,7 @@ public class frmFacturacion extends javax.swing.JFrame {
         this.pago = pago;
     }
 
-    public int getCambio() {
+    public double getCambio() {
         return cambio;
     }
 
@@ -85,36 +81,61 @@ public class frmFacturacion extends javax.swing.JFrame {
         int año = fecha.get(Calendar.YEAR);
         int mes = fecha.get(Calendar.MONTH);
         int dia = fecha.get(Calendar.DAY_OF_MONTH);
-        int hora = fecha.get(Calendar.HOUR_OF_DAY);
-        int minuto = fecha.get(Calendar.MINUTE);
-        int segundo = fecha.get(Calendar.SECOND);
         txtFecha.setText(dia + "/" + (mes + 1) + "/" + año);
     }
-    private DefaultTableModel modelo = new DefaultTableModel() {
+    private final DefaultTableModel modelo = new DefaultTableModel() {
         boolean[] canEdit = new boolean[]{
             false, false, true, false, false, false, false, false
         };
 
+        @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
             return canEdit[columnIndex];
         }
     };
 
+    public void obtenerSumaTotal() {
+        try {
+            double valor;
+            int materiales = tblaListProductos.getRowCount();
+            double suma = 0;
+            for (int a = 0; a < materiales; a++) //recorro las columnas
+            {
+                valor = Double.parseDouble(modelo.getValueAt(a, 5).toString());
+                suma += valor;
+            }
+            suma = Math.round(suma);
+            txtTotalPagar.setText(String.valueOf(suma));
+        } catch (Exception xp) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error inesperado al intentar calcular la suma total. Detalle técnico: " + xp.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public void eventoChangeTable() {
         tblaListProductos.getModel().addTableModelListener(new TableModelListener() {
+            @Override
             public void tableChanged(TableModelEvent e) {
-                double suma = 0;
-                int cantidad = 0;
-                for (int a = 0; a < tblaListProductos.getRowCount(); a++) //recorro las columnas
-                {
+                if (e.getColumn() == 2) {
                     try {
-//                        cantidad = Integer.parseInt(tblaListProductos.getValueAt(a, 2).toString());
-//                        double totalProducto = Double.parseDouble(tblaListProductos.getValueAt(a, 5).toString());
-//                        tblaListProductos.setValueAt(totalProducto, a, 5);
-                        suma += Double.parseDouble(tblaListProductos.getValueAt(a, 5).toString());
-                        txtTotalPagar.setText("" + suma);
+                        int fila = tblaListProductos.getSelectedRow();
+                        if (fila >= 0) {
+                            String codigo = tblaListProductos.getValueAt(fila, 0).toString();
+                            int cantidad = Integer.parseInt(tblaListProductos.getValueAt(fila, 2).toString());
+                            double precioUnitario = Double.parseDouble(tblaListProductos.getValueAt(fila, 4).toString());
+                            double precioTotal = precioUnitario * cantidad;
+                            modelo.setValueAt(precioTotal, fila, 5); // Row/Col
+                            obtenerSumaTotal();
+                        }
                     } catch (Exception xp) {
-                        JOptionPane.showMessageDialog(null, "Error inesperado. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Error inesperado al intentar calcular la cantidad ingresada. Detalle técnico: " + xp.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
@@ -132,7 +153,7 @@ public class frmFacturacion extends javax.swing.JFrame {
             //de almacenar todos los datos de la factura
             MaestroFactura maestro = new MaestroFactura();
             //Se crea una lista de la clase anterior
-            List<Producto> productos = new ArrayList<Producto>();
+            List<Producto> productos = new ArrayList<>();
             //Se setea todos los datos obtenidos en TextBox
             maestro.setNombreCliente(txtNombre.getText());
             maestro.setCedulaCliente(txtCedula.getText());
@@ -169,8 +190,8 @@ public class frmFacturacion extends javax.swing.JFrame {
                 producto.setPrecioTotal(precioTotal);
                 producto.setPrecioUnitario(precioUnitario);
                 producto.setPago(pago);
-                producto.setDescuento(descuento);
-                producto.setVuelto(cambio);
+                producto.setDescuento(Math.round(descuento));
+                producto.setVuelto(Math.round(cambio));
                 //Se le agrega los datos a la lista creada al principio del metodo
                 productos.add(producto);
             }
@@ -181,7 +202,7 @@ public class frmFacturacion extends javax.swing.JFrame {
             //Se crea una instancia de la clase Impresion
             Impresion p = new Impresion(factura);
             //Se envoca el metodo generar PDF para despues ser impreso como factura
-            p.generarArchivoPDF(txtNumeroFactura.getText());
+            p.generarArchivoPDF(txtNumeroFactura.getText(), txtObservación.getText());
         } catch (Exception xp) {
             JOptionPane.showMessageDialog(null,
                     "Error inesperado al intentar enviar los parametros necesarios para emitir la impresión. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -199,24 +220,93 @@ public class frmFacturacion extends javax.swing.JFrame {
         return existe;
     }
 
+    public void obtnerNumeroFactura() {
+        ArrayList registros = (ArrayList) oFacturacionD.obtenerUltimaFactura();
+        if (oInventarioD.isError()) {
+            JOptionPane.showMessageDialog(null,
+                    "Error consultando a la base de datos, detalle técnico:" + oInventarioD.getErrorMsg());
+        } else {
+            if (registros.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Problemas al intentar obtener el número de factura",
+                        "Advertencia",
+                        JOptionPane.WARNING_MESSAGE
+                );
+            } else {
+                for (Object registro : registros) {
+                    Facturacion aux = (Facturacion) registro;
+                    txtNumeroFactura.setText(String.valueOf(aux.getNumeroFactura() + 1));
+                }
+            }
+        }
+    }
+
     public int comprobarCantidad(String pCodigo) {
         int nuevaCantidad = 0;
-        double precioUnitario = 0;
-        double precioTotal = 0;
+        double precioUnitario;
+        double precioTotal;
         int materiales = tblaListProductos.getRowCount();
         for (int a = 0; a < materiales; a++) //recorro las columnas
         {
             if (pCodigo.equals(modelo.getValueAt(a, 0).toString())) {
                 nuevaCantidad = Integer.parseInt(String.valueOf(modelo.getValueAt(a, 2)));
                 nuevaCantidad++;
+                if ((int) numCantidad.getValue() > 0) {
+                    nuevaCantidad = (int) numCantidad.getValue();
+                }
                 precioUnitario = Double.parseDouble(String.valueOf(modelo.getValueAt(a, 4)));
                 precioTotal = precioUnitario * nuevaCantidad;
                 modelo.setValueAt(nuevaCantidad, a, 2); // Row/Col
                 modelo.setValueAt(precioTotal, a, 5); // Row/Col
+                obtenerSumaTotal();
                 break;
             }
         }
         return nuevaCantidad;
+    }
+
+    private void mostrarProducto(String pCodigo) {
+        if (pCodigo.equals("")) {
+            JOptionPane.showMessageDialog(null, "Por favor ingrese un código para continuar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        } else {
+            ArrayList registros = (ArrayList) oInventarioD.obtenerProducto(pCodigo);
+            if (oInventarioD.isError()) {
+                JOptionPane.showMessageDialog(null,
+                        "Error consultando a la base de datos, detalle técnico:" + oInventarioD.getErrorMsg());
+            } else {
+                if (existeCodigo(pCodigo) == false) {
+                    int cantidad = 1;
+                    if (registros.isEmpty()) {
+                        JOptionPane.showMessageDialog(null,
+                                "No se encuentra registrado el siguiente código: " + pCodigo,
+                                "Advertencia",
+                                JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        if ((int) numCantidad.getValue() > 0) {
+                            cantidad = (int) numCantidad.getValue();
+                        }
+                        for (Object registro : registros) {
+                            Inventario aux = (Inventario) registro;
+                            modelo.addRow(
+                                    new Object[]{
+                                        aux.getCodigoArticulo(),
+                                        aux.getDescripcion(),
+                                        cantidad,
+                                        aux.getExistencia(),
+                                        aux.getPrecioVenta(),
+                                        aux.getPrecioVenta()
+                                    }
+                            );
+                            tblaListProductos.updateUI();
+
+                        }
+                    }
+                } else {
+                    comprobarCantidad(pCodigo);
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -227,9 +317,8 @@ public class frmFacturacion extends javax.swing.JFrame {
         menuEliminar = new javax.swing.JMenuItem();
         menuIngresarCantidad = new javax.swing.JMenuItem();
         pnlBackground = new org.edisoncor.gui.panel.PanelNice();
-        tleBarraTitulo = new org.edisoncor.gui.varios.BarraTitle();
-        panelShadow1 = new org.edisoncor.gui.panel.PanelShadow();
-        panelNice1 = new org.edisoncor.gui.panel.PanelNice();
+        pnlContenedor = new org.edisoncor.gui.panel.PanelShadow();
+        pnlEncabezadoPrincipal = new org.edisoncor.gui.panel.PanelNice();
         pnlEncabezado = new org.edisoncor.gui.panel.PanelShadow();
         txtCedula = new org.edisoncor.gui.textField.TextField();
         txtDireccion = new org.edisoncor.gui.textField.TextField();
@@ -263,7 +352,7 @@ public class frmFacturacion extends javax.swing.JFrame {
         jSeparator7 = new javax.swing.JToolBar.Separator();
         btnVerFacturasPendientes = new javax.swing.JButton();
         jSeparator8 = new javax.swing.JToolBar.Separator();
-        jButton1 = new javax.swing.JButton();
+        btnBuscarClientes = new javax.swing.JButton();
         jSeparator10 = new javax.swing.JToolBar.Separator();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblaListProductos = new javax.swing.JTable();
@@ -281,7 +370,7 @@ public class frmFacturacion extends javax.swing.JFrame {
         txtDescuento = new org.edisoncor.gui.textField.TextField();
         tlbCodigo = new javax.swing.JToolBar();
         lblCantidad = new javax.swing.JLabel();
-        txtCantidad = new javax.swing.JTextField();
+        txtCodigo = new javax.swing.JTextField();
         lblCAntidad = new javax.swing.JLabel();
         numCantidad = new javax.swing.JSpinner();
 
@@ -297,13 +386,14 @@ public class frmFacturacion extends javax.swing.JFrame {
         menuClickDerecho.add(menuIngresarCantidad);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Sistema de facturación");
+        setName("Sistema Facturacion"); // NOI18N
 
         pnlBackground.setBackground(new java.awt.Color(204, 204, 204));
-        pnlBackground.add(tleBarraTitulo, java.awt.BorderLayout.PAGE_START);
 
-        panelShadow1.setBackground(new java.awt.Color(204, 204, 204));
+        pnlContenedor.setBackground(new java.awt.Color(204, 204, 204));
 
-        panelNice1.setBackground(new java.awt.Color(204, 204, 204));
+        pnlEncabezadoPrincipal.setBackground(new java.awt.Color(204, 204, 204));
 
         txtCedula.setEditable(false);
 
@@ -314,7 +404,6 @@ public class frmFacturacion extends javax.swing.JFrame {
         cmbTipoCliente.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Contado", "Crédito" }));
 
         txtNumeroFactura.setEditable(false);
-        txtNumeroFactura.setText("1");
 
         txtLimiteCredito.setEditable(false);
 
@@ -377,7 +466,7 @@ public class frmFacturacion extends javax.swing.JFrame {
                 .addGroup(pnlEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtNumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtLimiteCredito, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(426, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlEncabezadoLayout.setVerticalGroup(
             pnlEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -405,7 +494,7 @@ public class frmFacturacion extends javax.swing.JFrame {
                 .addContainerGap(29, Short.MAX_VALUE))
         );
 
-        panelNice1.add(pnlEncabezado, java.awt.BorderLayout.CENTER);
+        pnlEncabezadoPrincipal.add(pnlEncabezado, java.awt.BorderLayout.CENTER);
 
         tbrOpciones.setFloatable(false);
         tbrOpciones.setRollover(true);
@@ -413,9 +502,9 @@ public class frmFacturacion extends javax.swing.JFrame {
         jSeparator11.setBackground(new java.awt.Color(0, 0, 0));
         tbrOpciones.add(jSeparator11);
 
-        btnBuscarProductos.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
+        btnBuscarProductos.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnBuscarProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Icono_Buscar.png"))); // NOI18N
-        btnBuscarProductos.setText("Buscar productos");
+        btnBuscarProductos.setText("Buscar productos (B)");
         btnBuscarProductos.setFocusable(false);
         btnBuscarProductos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnBuscarProductos.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -430,8 +519,8 @@ public class frmFacturacion extends javax.swing.JFrame {
         jSeparator1.setForeground(new java.awt.Color(240, 240, 240));
         tbrOpciones.add(jSeparator1);
 
-        btnProductosVarios.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
-        btnProductosVarios.setText("Productos varios");
+        btnProductosVarios.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
+        btnProductosVarios.setText("Buscar productos varios (S)");
         btnProductosVarios.setFocusable(false);
         btnProductosVarios.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnProductosVarios.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -446,9 +535,9 @@ public class frmFacturacion extends javax.swing.JFrame {
         jSeparator2.setForeground(new java.awt.Color(240, 240, 240));
         tbrOpciones.add(jSeparator2);
 
-        btnEliminarProducto.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
+        btnEliminarProducto.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnEliminarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/cancelar-icono.png"))); // NOI18N
-        btnEliminarProducto.setText("Eliminar");
+        btnEliminarProducto.setText("Eliminar (Supr)");
         btnEliminarProducto.setFocusable(false);
         btnEliminarProducto.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnEliminarProducto.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -462,9 +551,9 @@ public class frmFacturacion extends javax.swing.JFrame {
         jSeparator3.setBackground(new java.awt.Color(0, 0, 0));
         tbrOpciones.add(jSeparator3);
 
-        btnLimpiar.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
+        btnLimpiar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/clear.png"))); // NOI18N
-        btnLimpiar.setText("Limpiar");
+        btnLimpiar.setText("Limpiar (L)");
         btnLimpiar.setFocusable(false);
         btnLimpiar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnLimpiar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -478,9 +567,9 @@ public class frmFacturacion extends javax.swing.JFrame {
         jSeparator9.setBackground(new java.awt.Color(0, 0, 0));
         tbrOpciones.add(jSeparator9);
 
-        btnDescuentosPorProducto.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
+        btnDescuentosPorProducto.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnDescuentosPorProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/percentage.png"))); // NOI18N
-        btnDescuentosPorProducto.setText("Descuentos por producto");
+        btnDescuentosPorProducto.setText("Descuentos por producto (D)");
         btnDescuentosPorProducto.setFocusable(false);
         btnDescuentosPorProducto.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnDescuentosPorProducto.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -489,9 +578,9 @@ public class frmFacturacion extends javax.swing.JFrame {
         jSeparator4.setBackground(new java.awt.Color(0, 0, 0));
         tbrOpciones.add(jSeparator4);
 
-        btnImprimirFactura.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
+        btnImprimirFactura.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnImprimirFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/money.png"))); // NOI18N
-        btnImprimirFactura.setText("Facturar");
+        btnImprimirFactura.setText("Facturar (F)");
         btnImprimirFactura.setFocusable(false);
         btnImprimirFactura.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnImprimirFactura.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -505,9 +594,9 @@ public class frmFacturacion extends javax.swing.JFrame {
         jSeparator5.setBackground(new java.awt.Color(0, 0, 0));
         tbrOpciones.add(jSeparator5);
 
-        btnPausarFactura.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
+        btnPausarFactura.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnPausarFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/pausar.png"))); // NOI18N
-        btnPausarFactura.setText("Pausar factura");
+        btnPausarFactura.setText("Pausar factura (P)");
         btnPausarFactura.setFocusable(false);
         btnPausarFactura.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnPausarFactura.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -521,9 +610,9 @@ public class frmFacturacion extends javax.swing.JFrame {
         jSeparator7.setBackground(new java.awt.Color(0, 0, 0));
         tbrOpciones.add(jSeparator7);
 
-        btnVerFacturasPendientes.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
+        btnVerFacturasPendientes.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnVerFacturasPendientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/pendientes.png"))); // NOI18N
-        btnVerFacturasPendientes.setText("Ver facturas pendientes");
+        btnVerFacturasPendientes.setText("Facturas pendientes (V)");
         btnVerFacturasPendientes.setFocusable(false);
         btnVerFacturasPendientes.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnVerFacturasPendientes.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -537,18 +626,18 @@ public class frmFacturacion extends javax.swing.JFrame {
         jSeparator8.setBackground(new java.awt.Color(0, 0, 0));
         tbrOpciones.add(jSeparator8);
 
-        jButton1.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Buscar-Clientes.png"))); // NOI18N
-        jButton1.setText("Buscar clientes");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnBuscarClientes.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
+        btnBuscarClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Buscar-Clientes.png"))); // NOI18N
+        btnBuscarClientes.setText("Buscar clientes (C)");
+        btnBuscarClientes.setFocusable(false);
+        btnBuscarClientes.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnBuscarClientes.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnBuscarClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnBuscarClientesActionPerformed(evt);
             }
         });
-        tbrOpciones.add(jButton1);
+        tbrOpciones.add(btnBuscarClientes);
 
         jSeparator10.setBackground(new java.awt.Color(0, 0, 0));
         tbrOpciones.add(jSeparator10);
@@ -619,7 +708,7 @@ public class frmFacturacion extends javax.swing.JFrame {
                         .addGroup(pnlPieFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtNombreVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 542, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(pnlPieFrameLayout.createSequentialGroup()
                         .addComponent(txtObservación, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(10, 10, 10)))
@@ -671,48 +760,60 @@ public class frmFacturacion extends javax.swing.JFrame {
         lblCantidad.setText("Código:");
         tlbCodigo.add(lblCantidad);
 
-        txtCantidad.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        txtCantidad.setPreferredSize(new java.awt.Dimension(150, 27));
-        tlbCodigo.add(txtCantidad);
+        txtCodigo.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
+        txtCodigo.setPreferredSize(new java.awt.Dimension(150, 27));
+        txtCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCodigoKeyPressed(evt);
+            }
+        });
+        tlbCodigo.add(txtCodigo);
 
         lblCAntidad.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
         lblCAntidad.setText("Cantidad:");
         tlbCodigo.add(lblCAntidad);
 
         numCantidad.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
+        numCantidad.setModel(new javax.swing.SpinnerNumberModel(0, 0, 9999999, 1));
+        numCantidad.setPreferredSize(new java.awt.Dimension(75, 30));
+        numCantidad.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                numCantidadKeyPressed(evt);
+            }
+        });
         tlbCodigo.add(numCantidad);
 
-        javax.swing.GroupLayout panelShadow1Layout = new javax.swing.GroupLayout(panelShadow1);
-        panelShadow1.setLayout(panelShadow1Layout);
-        panelShadow1Layout.setHorizontalGroup(
-            panelShadow1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelNice1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(tbrOpciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        javax.swing.GroupLayout pnlContenedorLayout = new javax.swing.GroupLayout(pnlContenedor);
+        pnlContenedor.setLayout(pnlContenedorLayout);
+        pnlContenedorLayout.setHorizontalGroup(
+            pnlContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlEncabezadoPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(tbrOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(panelNice2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(tlbCodigo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        panelShadow1Layout.setVerticalGroup(
-            panelShadow1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelShadow1Layout.createSequentialGroup()
-                .addComponent(panelNice1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+        pnlContenedorLayout.setVerticalGroup(
+            pnlContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlContenedorLayout.createSequentialGroup()
+                .addComponent(pnlEncabezadoPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tbrOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tlbCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelNice2, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        pnlBackground.add(panelShadow1, java.awt.BorderLayout.CENTER);
+        pnlBackground.add(pnlContenedor, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 1250, Short.MAX_VALUE)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, 1242, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -728,8 +829,17 @@ public class frmFacturacion extends javax.swing.JFrame {
         oSearch.setVisible(true);
         if (oSearch.isAceptar()) {
             if (existeCodigo(oSearch.getCodigo()) == false) {
-                modelo.addRow(new Object[]{oSearch.getCodigo(), oSearch.getDescripcion(), "1", oSearch.getExistencia(), oSearch.getPrecioVenta(), oSearch.getPrecioVenta()});
+                modelo.addRow(
+                        new Object[]{
+                            oSearch.getCodigo(),
+                            oSearch.getDescripcion(),
+                            "1", oSearch.getExistencia(),
+                            oSearch.getPrecioVenta(),
+                            oSearch.getPrecioVenta()
+                        }
+                );
                 tblaListProductos.updateUI();
+                obtenerSumaTotal();
             } else {
                 comprobarCantidad(oSearch.getCodigo());
             }
@@ -747,6 +857,7 @@ public class frmFacturacion extends javax.swing.JFrame {
                 pago = oPagar.getPagoCon();
                 cambio = oPagar.getCambio();
                 descuento = oPagar.getDescuento();
+                txtDescuento.setText("" + descuento);
                 if (tipoCliente.equals("Contado")) {
                     if (numeroMateriales > 0) {
                         imprimirFactura(numeroMateriales);
@@ -865,7 +976,7 @@ public class frmFacturacion extends javax.swing.JFrame {
                                 existe = true;
                             }
                         } catch (Exception xp) {
-                            JOptionPane.showMessageDialog(null, xp.getMessage());
+                            JOptionPane.showMessageDialog(null, "Error inesperado al intentar pausar la factura. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 } while (existe == true);
@@ -906,13 +1017,53 @@ public class frmFacturacion extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnVerFacturasPendientesActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnBuscarClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarClientesActionPerformed
         // TODO add your handling code here:
         frmBuscarCliente oSearch = new frmBuscarCliente(this, rootPaneCheckingEnabled, cnx);
         oSearch.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnBuscarClientesActionPerformed
+
+    private void txtCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyPressed
+        // TODO add your handling code here:
+        int key = evt.getKeyCode();
+        if (evt.getSource() == txtCodigo) {
+            if (key == KeyEvent.VK_ENTER) {
+                mostrarProducto(txtCodigo.getText());
+                obtenerSumaTotal();
+                txtCodigo.setText("");
+                numCantidad.setValue(0);
+            }
+        }
+    }//GEN-LAST:event_txtCodigoKeyPressed
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        //Acá se lee que se esté llamando desde el Frame con la Tecla Escape
+        if (e.getSource().equals(this) && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            JOptionPane.showMessageDialog(null, fecha);
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getSource().equals(this) && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            JOptionPane.showMessageDialog(null, fecha);
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        if (e.getSource().equals(this) && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            JOptionPane.showMessageDialog(null, fecha);
+        }
+    }
+    private void numCantidadKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_numCantidadKeyPressed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_numCantidadKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBuscarClientes;
     private javax.swing.JButton btnBuscarProductos;
     private javax.swing.JButton btnDescuentosPorProducto;
     private javax.swing.JButton btnEliminarProducto;
@@ -922,7 +1073,6 @@ public class frmFacturacion extends javax.swing.JFrame {
     private javax.swing.JButton btnProductosVarios;
     private javax.swing.JButton btnVerFacturasPendientes;
     private org.edisoncor.gui.comboBox.ComboBoxRectIcon cmbTipoCliente;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel13;
@@ -952,18 +1102,17 @@ public class frmFacturacion extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuEliminar;
     private javax.swing.JMenuItem menuIngresarCantidad;
     private javax.swing.JSpinner numCantidad;
-    private org.edisoncor.gui.panel.PanelNice panelNice1;
     private org.edisoncor.gui.panel.PanelNice panelNice2;
-    private org.edisoncor.gui.panel.PanelShadow panelShadow1;
     private org.edisoncor.gui.panel.PanelNice pnlBackground;
+    private org.edisoncor.gui.panel.PanelShadow pnlContenedor;
     private org.edisoncor.gui.panel.PanelShadow pnlEncabezado;
+    private org.edisoncor.gui.panel.PanelNice pnlEncabezadoPrincipal;
     private org.edisoncor.gui.panel.PanelShadow pnlPieFrame;
     private javax.swing.JTable tblaListProductos;
     private javax.swing.JToolBar tbrOpciones;
     private javax.swing.JToolBar tlbCodigo;
-    private org.edisoncor.gui.varios.BarraTitle tleBarraTitulo;
-    private javax.swing.JTextField txtCantidad;
     private org.edisoncor.gui.textField.TextField txtCedula;
+    private javax.swing.JTextField txtCodigo;
     private org.edisoncor.gui.textField.TextField txtDescuento;
     private org.edisoncor.gui.textField.TextField txtDireccion;
     private org.edisoncor.gui.textField.TextField txtFecha;
@@ -975,4 +1124,5 @@ public class frmFacturacion extends javax.swing.JFrame {
     private org.edisoncor.gui.textField.TextField txtTelefono;
     private org.edisoncor.gui.textField.TextField txtTotalPagar;
     // End of variables declaration//GEN-END:variables
+
 }

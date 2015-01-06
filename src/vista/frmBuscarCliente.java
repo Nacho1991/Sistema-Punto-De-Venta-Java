@@ -5,12 +5,16 @@
  */
 package vista;
 
+import XmlD.Cliente;
 import accesoDatos.AccesoDatosMySql;
 import accesoDatos.ClientesD;
-import accesoDatos.InventarioD;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import logica.Clientes;
 import logica.Inventario;
 
 /**
@@ -21,9 +25,13 @@ public class frmBuscarCliente extends javax.swing.JDialog {
 
     AccesoDatosMySql cnx;
     private ClientesD oClienteD;
-    private String[] cabeceras = {"Código", "Nombre", "Marca", "Descripción", "Precio de compra", "Precio de venta", "Existencia", "Cantidad", "Fecha de entrada"};
-    private String[][] datos = new String[0][9];
-    ArrayList tarjetas;
+    private ArrayList registros;
+    private String[][] datos = new String[0][11];
+    private String[] cabeceras = {
+        "N° Registro", "Cédula", "Nombre", "Telefono", "Dirección",
+        "Estado", "Tipo de cliente", "Fecha de creación", "Fecha de modificación",
+        "Modificado por", "Creado por"
+    };
 
     public frmBuscarCliente(java.awt.Frame parent, boolean modal, AccesoDatosMySql pCnx) {
         super(parent, modal);
@@ -31,6 +39,7 @@ public class frmBuscarCliente extends javax.swing.JDialog {
         oClienteD = new ClientesD(pCnx);
         cnx = pCnx;
         refrescar();
+        setLocationRelativeTo(null);
     }
 
     private DefaultTableModel modelo = new DefaultTableModel() {
@@ -39,28 +48,120 @@ public class frmBuscarCliente extends javax.swing.JDialog {
             return false;
         }
     };
-    private void refrescar() {
-        tarjetas = (ArrayList) oClienteD.consultarRegistro();
+
+    //Metodo para el evnto de cambio
+    private void setJTexFieldChanged(JTextField txt) {
+        DocumentListener documentListener = new DocumentListener() {
+
+            @Override
+            public void changedUpdate(DocumentEvent documentEvent) {
+                printIt(documentEvent);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent documentEvent) {
+                printIt(documentEvent);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent documentEvent) {
+                printIt(documentEvent);
+            }
+        };
+        txt.getDocument().addDocumentListener(documentListener);
+    }
+
+    //Metodo que permite mostrar los datos que se ingresan al TextBox
+
+    private void printIt(DocumentEvent documentEvent) {
+        DocumentEvent.EventType type = documentEvent.getType();
+        if (type.equals(DocumentEvent.EventType.CHANGE)) {
+
+        } else if (type.equals(DocumentEvent.EventType.INSERT)) {
+            txtEjemploJTextFieldChanged();
+        } else if (type.equals(DocumentEvent.EventType.REMOVE)) {
+            txtEjemploJTextFieldChanged();
+        }
+    }
+
+    //Envocamos el evento de cambio de texto
+
+    private void txtEjemploJTextFieldChanged() {
+        String opcion = cmbOpcionesBusqueda.getSelectedItem().toString();
+        switch (opcion) {
+            case "Código":
+                opcion = "Id_Producto";
+                mostrarFiltro(txtFiltroBusqueda.getText(), opcion);
+                break;
+            case "Descripción":
+                opcion = "Descripcion";
+                mostrarFiltro(txtFiltroBusqueda.getText(), opcion);
+                break;
+            case "Marca":
+                opcion = "Marca";
+                mostrarFiltro(txtFiltroBusqueda.getText(), opcion);
+                break;
+        }
+    }
+
+    private void mostrarFiltro(String pFiltro, String pOpcion) {
+        registros = (ArrayList) oClienteD.filtrarCliente(pFiltro, pOpcion);
         if (oClienteD.isError()) {
             JOptionPane.showMessageDialog(null,
                     "Error consultando a la base de datos, detalle técnico:" + oClienteD.getErrorMsg());
         } else {
-            this.datos = new String[tarjetas.size()][9];
-            for (int i = 0; i < tarjetas.size(); i++) {
-                Inventario aux = (Inventario) tarjetas.get(i);
-                this.datos[i][0] = aux.getCodProducto();
-                this.datos[i][1] = aux.getNombre();
-                this.datos[i][2] = aux.getMarca();
-                this.datos[i][3] = aux.getDescripcion();
-                this.datos[i][4] = String.valueOf(aux.getPrecioCompra());
-                this.datos[i][5] = String.valueOf(aux.getPrecioVenta());
-                this.datos[i][6] = aux.getExistencia();
-                this.datos[i][7] = String.valueOf(aux.getCantidad());
-                this.datos[i][8] = aux.getFechaEntrada();
+            this.datos = new String[registros.size()][10];
+            for (int i = 0; i < registros.size(); i++) {
+                Inventario aux = (Inventario) registros.get(i);
+                this.datos[i][0] = String.valueOf(aux.getId());
+                this.datos[i][1] = aux.getCodigoArticulo();
+                this.datos[i][2] = aux.getNombre();
+                this.datos[i][3] = aux.getMarca();
+                this.datos[i][4] = aux.getDescripcion();
+                this.datos[i][5] = String.valueOf(aux.getPrecioCompra());
+                this.datos[i][6] = String.valueOf(aux.getPrecioVenta());
+                this.datos[i][7] = aux.getExistencia();
+                this.datos[i][8] = String.valueOf(aux.getCantidad());
+                this.datos[i][9] = aux.getFechaEntrada();
 
             }
             this.modelo.setDataVector(datos, cabeceras);
             this.tblaRegistroClientes.setModel(modelo);
+        }
+    }
+
+    private void refrescar() {
+        registros = (ArrayList) oClienteD.consultarRegistro();
+        if (oClienteD.isError()) {
+            JOptionPane.showMessageDialog(null,
+                    "Error consultando a la base de datos, detalle técnico:" + oClienteD.getErrorMsg());
+        } else {
+            this.datos = new String[registros.size()][11];
+            try {
+                if (registros.isEmpty() == false) {
+                    for (int i = 0; i < registros.size(); i++) {
+                        Clientes aux = (Clientes) registros.get(i);
+                        this.datos[i][0] = String.valueOf(aux.getCodCliente());
+                        this.datos[i][1] = aux.getCedula();
+                        this.datos[i][2] = aux.getNombre();
+                        this.datos[i][3] = aux.getTelefono();
+                        this.datos[i][4] = aux.getDireccion();
+                        this.datos[i][5] = aux.getEstado();
+                        this.datos[i][6] = aux.getTipoCliente();
+                        this.datos[i][7] = aux.getFechaCreacion();
+                        this.datos[i][8] = aux.getFechaModificacion();
+                        this.datos[i][9] = aux.getCreadoPor();
+                        this.datos[i][10] = aux.getModificadoPor();
+
+                    }
+                    this.modelo.setDataVector(datos, cabeceras);
+                    this.tblaRegistroClientes.setModel(modelo);
+                } else {
+                    JOptionPane.showMessageDialog(null, "No existen registros de clientes.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                }
+            } catch (Exception xp) {
+                JOptionPane.showMessageDialog(null, "Error inesperado por parte de la aplicación. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -69,25 +170,20 @@ public class frmBuscarCliente extends javax.swing.JDialog {
     private void initComponents() {
 
         pnlBackground = new org.edisoncor.gui.panel.PanelNice();
-        titleBar1 = new org.edisoncor.gui.varios.TitleBar();
         pnlVisor = new org.edisoncor.gui.panel.PanelShadow();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtDatoFiltrar = new javax.swing.JTextField();
+        txtFiltroBusqueda = new javax.swing.JTextField();
         cmbOpcionesBusqueda = new javax.swing.JComboBox();
         buttonColoredAction1 = new org.edisoncor.gui.button.ButtonColoredAction();
         pnlRegistrosCliente = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblaRegistroClientes = new javax.swing.JTable();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Buscador de clientes");
 
         pnlBackground.setBackground(new java.awt.Color(138, 138, 138));
-
-        titleBar1.setTitulo("Buscar clientes");
-        pnlBackground.add(titleBar1, java.awt.BorderLayout.PAGE_START);
 
         jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(254, 254, 254));
@@ -104,6 +200,7 @@ public class frmBuscarCliente extends javax.swing.JDialog {
         pnlRegistrosCliente.setBackground(new java.awt.Color(138, 138, 138));
         pnlRegistrosCliente.setBorder(javax.swing.BorderFactory.createTitledBorder("Registros de clientes"));
 
+        tblaRegistroClientes.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(tblaRegistroClientes);
 
         javax.swing.GroupLayout pnlRegistrosClienteLayout = new javax.swing.GroupLayout(pnlRegistrosCliente);
@@ -114,14 +211,8 @@ public class frmBuscarCliente extends javax.swing.JDialog {
         );
         pnlRegistrosClienteLayout.setVerticalGroup(
             pnlRegistrosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlRegistrosClienteLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
         );
-
-        jLabel3.setText("Código del producto:");
-
-        jLabel4.setText("Código del producto:");
 
         javax.swing.GroupLayout pnlVisorLayout = new javax.swing.GroupLayout(pnlVisor);
         pnlVisor.setLayout(pnlVisorLayout);
@@ -134,22 +225,12 @@ public class frmBuscarCliente extends javax.swing.JDialog {
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtDatoFiltrar)
+                    .addComponent(txtFiltroBusqueda)
                     .addComponent(cmbOpcionesBusqueda, 0, 326, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(buttonColoredAction1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(126, Short.MAX_VALUE))
+                .addContainerGap(380, Short.MAX_VALUE))
             .addComponent(pnlRegistrosCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(pnlVisorLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel3)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-            .addGroup(pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlVisorLayout.createSequentialGroup()
-                    .addContainerGap(322, Short.MAX_VALUE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(481, Short.MAX_VALUE)))
         );
         pnlVisorLayout.setVerticalGroup(
             pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -157,7 +238,7 @@ public class frmBuscarCliente extends javax.swing.JDialog {
                 .addGap(37, 37, 37)
                 .addGroup(pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtDatoFiltrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFiltroBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buttonColoredAction1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -165,16 +246,6 @@ public class frmBuscarCliente extends javax.swing.JDialog {
                     .addComponent(jLabel2))
                 .addGap(33, 33, 33)
                 .addComponent(pnlRegistrosCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(pnlVisorLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel3)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-            .addGroup(pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlVisorLayout.createSequentialGroup()
-                    .addContainerGap(192, Short.MAX_VALUE)
-                    .addComponent(jLabel4)
-                    .addContainerGap(192, Short.MAX_VALUE)))
         );
 
         pnlBackground.add(pnlVisor, java.awt.BorderLayout.CENTER);
@@ -198,14 +269,11 @@ public class frmBuscarCliente extends javax.swing.JDialog {
     private javax.swing.JComboBox cmbOpcionesBusqueda;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private org.edisoncor.gui.panel.PanelNice pnlBackground;
     private javax.swing.JPanel pnlRegistrosCliente;
     private org.edisoncor.gui.panel.PanelShadow pnlVisor;
     private javax.swing.JTable tblaRegistroClientes;
-    private org.edisoncor.gui.varios.TitleBar titleBar1;
-    private javax.swing.JTextField txtDatoFiltrar;
+    private javax.swing.JTextField txtFiltroBusqueda;
     // End of variables declaration//GEN-END:variables
 }

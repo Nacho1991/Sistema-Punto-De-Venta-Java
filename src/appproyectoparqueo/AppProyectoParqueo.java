@@ -4,11 +4,10 @@
  */
 package appproyectoparqueo;
 
+import Utilidades.Utilidades;
 import accesoDatos.AccesoDatosMySql;
 import java.io.IOException;
 import javax.swing.JOptionPane;
-import logica.Empleado;
-import org.hyperic.sigar.*;
 import vista.frmLogin;
 import vista.frmPrincipal;
 
@@ -19,10 +18,11 @@ public class AppProyectoParqueo {
 
     static AccesoDatosMySql oAccesoDatos;
 
-    public static void main(String[] args) throws IOException {
-        
-        Config cfg = new Config(System.getProperty("user.dir")
-                + "//config.cfg");
+    public static void main(String[] args) throws IOException, Exception {
+        Utilidades o = new Utilidades();
+
+        String ruta = "C:\\Sistema Punto Venta\\Archivo configuración\\config.cfg";
+        Config cfg = new Config(ruta);
         String[] param = cfg.leerConfiguracion();
         if (cfg.getIsError()) {
             JOptionPane.showMessageDialog(null, "Error inesperado durante la ejecución del programa. Detalle técnico:\n" + cfg.getErrorDescripcion(), "Error", JOptionPane.ERROR_MESSAGE);

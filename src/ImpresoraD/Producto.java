@@ -6,7 +6,7 @@ package ImpresoraD;
 
 /**
  *
- * @author Rolando
+ * @author Ignacio
  */
 public class Producto {
     
@@ -15,12 +15,12 @@ public class Producto {
     private int condigo;
     private String descripcion;
     private double precioUnitario;
-    private int precioTotal;
-    private int descuento;
-    private int pago;
-    private int vuelto;
+    private double precioTotal;
+    private double descuento;
+    private double pago;
+    private double vuelto;
 
-    public int getPrecioTotal() {
+    public double getPrecioTotal() {
         return precioTotal;
     }
 
@@ -28,27 +28,27 @@ public class Producto {
         this.precioTotal = precioTotal;
     }
 
-    public int getDescuento() {
+    public double getDescuento() {
         return descuento;
     }
 
-    public void setDescuento(int descuento) {
+    public void setDescuento(double descuento) {
         this.descuento = descuento;
     }
 
-    public int getPago() {
+    public double getPago() {
         return pago;
     }
 
-    public void setPago(int pago) {
+    public void setPago(double pago) {
         this.pago = pago;
     }
 
-    public int getVuelto() {
+    public double getVuelto() {
         return vuelto;
     }
 
-    public void setVuelto(int vuelto) {
+    public void setVuelto(double vuelto) {
         this.vuelto = vuelto;
     }
     

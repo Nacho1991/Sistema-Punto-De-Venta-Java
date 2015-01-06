@@ -5,24 +5,9 @@
  */
 package vista;
 
-import ImpresoraD.Factura;
-import ImpresoraD.MaestroFactura;
-import ImpresoraD.Producto;
-import ImpresoraL.Impresion;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import org.edisoncor.gui.button.ButtonAction;
-import org.edisoncor.gui.textField.TextField;
-import org.edisoncor.gui.util.WindowDragger;
-import org.edisoncor.gui.util.WindowsUtil;
 
 /**
  *
@@ -33,12 +18,11 @@ public class frmPagoFactura extends javax.swing.JDialog {
     private boolean aceptar;
     private String totalPagar;
     private int pagoCon;
-    private int descuento;
-    private int cambio;
+    private double descuento;
+    private double cambio;
 
     public frmPagoFactura(java.awt.Frame parent, boolean modal, String totalPagar, String pNumeroFactura, int pTotalArticulos) {
         super(parent, modal);
-        setUndecorated(true);
         initComponents();
         txtNumeroFacturaContado.setHorizontalAlignment(JTextField.RIGHT);
         txtNumeroFacturaCredito.setHorizontalAlignment(JTextField.RIGHT);
@@ -47,14 +31,6 @@ public class frmPagoFactura extends javax.swing.JDialog {
         lblMontoPagarContado.setText("" + ((int) Math.round(Double.parseDouble(totalPagar))));
         lblMontoPagarCredito.setText("" + ((int) Math.round(Double.parseDouble(totalPagar))));
         lblNumeroArticulos.setText("" + pTotalArticulos);
-        WindowsUtil.makeWindowsShape(this, pnlBackground.getShape());
-        new WindowDragger(this, pnlBackground);
-
-        brtleBarraTitulo.addCloseAction(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                setVisible(false);
-            }
-        });
         setLocationRelativeTo(null);
     }
 
@@ -66,7 +42,7 @@ public class frmPagoFactura extends javax.swing.JDialog {
         this.pagoCon = pagoCon;
     }
 
-    public int getDescuento() {
+    public double getDescuento() {
         return descuento;
     }
 
@@ -74,11 +50,11 @@ public class frmPagoFactura extends javax.swing.JDialog {
         this.descuento = descuento;
     }
 
-    public int getCambio() {
+    public double getCambio() {
         return cambio;
     }
 
-    public void setCambio(int cambio) {
+    public void setCambio(double cambio) {
         this.cambio = cambio;
     }
 
@@ -101,19 +77,18 @@ public class frmPagoFactura extends javax.swing.JDialog {
     public void calculaDescuento() {
         try {
             int monto = (int) Math.round(Double.parseDouble(lblMontoPagarContado.getText()));
-            int montoTotal;
+            double montoTotal;
             pagoCon = Math.round(Integer.parseInt(numPagonCon.getValue().toString()));
             if (pagoCon >= monto) {
-                descuento = (Integer.parseInt(numDescuento.getValue().toString()) * monto) / 100;
-                montoTotal = monto - descuento;
+                descuento = Math.round((Double.parseDouble(numDescuento.getValue().toString()) * monto) / 100);
+                Math.round(montoTotal = monto - descuento);
                 Math.round(cambio = pagoCon - montoTotal);
                 lblCambio.setText("" + cambio);
-            }else
-            {
-                aceptar=false;
+            } else {
+                aceptar = false;
                 JOptionPane.showMessageDialog(null, "Monto insuficiente para cancelar la factura.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
-        } catch (Exception xp) {
+        } catch (NumberFormatException | HeadlessException xp) {
             JOptionPane.showMessageDialog(null, "Error inesperado al intentar calcular los montos a facturar. Detalle técnico: " + xp.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -124,7 +99,6 @@ public class frmPagoFactura extends javax.swing.JDialog {
     private void initComponents() {
 
         pnlBackground = new org.edisoncor.gui.panel.PanelNice();
-        brtleBarraTitulo = new org.edisoncor.gui.varios.TitleBar();
         pnlOpciones = new org.edisoncor.gui.panel.PanelShadow();
         btnCobrarImprimir = new org.edisoncor.gui.button.ButtonAction();
         btnSoloCobrar = new org.edisoncor.gui.button.ButtonAction();
@@ -164,13 +138,11 @@ public class frmPagoFactura extends javax.swing.JDialog {
         lblMontoPagarTarjeta = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Pago de factura");
 
-        pnlBackground.setBackground(new java.awt.Color(124, 119, 119));
+        pnlBackground.setBackground(new java.awt.Color(240, 240, 240));
 
-        brtleBarraTitulo.setBackground(new java.awt.Color(254, 254, 254));
-        brtleBarraTitulo.setForeground(new java.awt.Color(254, 254, 254));
-        brtleBarraTitulo.setTitulo("Cancelar factura");
-        pnlBackground.add(brtleBarraTitulo, java.awt.BorderLayout.PAGE_START);
+        pnlOpciones.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         btnCobrarImprimir.setText("F2 - Cobrar e imprimir");
         btnCobrarImprimir.addActionListener(new java.awt.event.ActionListener() {
@@ -189,11 +161,9 @@ public class frmPagoFactura extends javax.swing.JDialog {
         });
 
         lblTotalArticulos.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblTotalArticulos.setForeground(new java.awt.Color(254, 254, 254));
         lblTotalArticulos.setText("Total de articulos:");
 
         lblNumeroArticulos.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        lblNumeroArticulos.setForeground(new java.awt.Color(254, 254, 254));
         lblNumeroArticulos.setText("0");
 
         btnBuscarCliente.setText("Buscar cliente");
@@ -244,7 +214,7 @@ public class frmPagoFactura extends javax.swing.JDialog {
                 .addComponent(btnBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnVerDetalles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         pnlBackground.add(pnlOpciones, java.awt.BorderLayout.LINE_END);
@@ -258,23 +228,21 @@ public class frmPagoFactura extends javax.swing.JDialog {
             }
         });
 
+        lblTotalPagar.setBackground(new java.awt.Color(255, 255, 255));
         lblTotalPagar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblTotalPagar.setForeground(new java.awt.Color(254, 254, 254));
         lblTotalPagar.setText("Total a pagar:");
 
         lblMontoPagarContado.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        lblMontoPagarContado.setForeground(new java.awt.Color(254, 254, 254));
         lblMontoPagarContado.setText("0");
 
         lblPagoCon.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        lblPagoCon.setForeground(new java.awt.Color(254, 254, 254));
         lblPagoCon.setText("Pagó con:");
 
         lblSuCambio.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        lblSuCambio.setForeground(new java.awt.Color(254, 254, 254));
         lblSuCambio.setText("Su cambio:");
 
         numPagonCon.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        numPagonCon.setModel(new javax.swing.SpinnerNumberModel(0, 0, 1569325055, 1));
         numPagonCon.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 numPagonConStateChanged(evt);
@@ -282,7 +250,6 @@ public class frmPagoFactura extends javax.swing.JDialog {
         });
 
         lblCambio.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        lblCambio.setForeground(new java.awt.Color(254, 254, 254));
         lblCambio.setText("0");
 
         txtNumeroFacturaContado.setEditable(false);
@@ -291,14 +258,13 @@ public class frmPagoFactura extends javax.swing.JDialog {
         txtNumeroFacturaContado.setText("0");
 
         lblNumeroFacturaContado.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        lblNumeroFacturaContado.setForeground(new java.awt.Color(254, 254, 254));
         lblNumeroFacturaContado.setText("No. Factura:");
 
         lblDescuento.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        lblDescuento.setForeground(new java.awt.Color(254, 254, 254));
         lblDescuento.setText("Descuento:");
 
         numDescuento.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        numDescuento.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 1.0E20d, 1.0d));
         numDescuento.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 numDescuentoStateChanged(evt);
@@ -306,7 +272,6 @@ public class frmPagoFactura extends javax.swing.JDialog {
         });
 
         jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(254, 254, 254));
         jLabel1.setText("%");
 
         javax.swing.GroupLayout pnlContadoLayout = new javax.swing.GroupLayout(pnlContado);
@@ -322,18 +287,18 @@ public class frmPagoFactura extends javax.swing.JDialog {
                     .addComponent(lblSuCambio))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlContadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(numPagonCon, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtNumeroFacturaContado, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lblCambio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(pnlContadoLayout.createSequentialGroup()
-                        .addGroup(pnlContadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblMontoPagarContado)
-                            .addComponent(lblTotalPagar))
-                        .addGap(0, 64, Short.MAX_VALUE))
-                    .addGroup(pnlContadoLayout.createSequentialGroup()
-                        .addComponent(numDescuento)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)))
+                        .addGroup(pnlContadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtNumeroFacturaContado, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlContadoLayout.createSequentialGroup()
+                                .addComponent(numDescuento, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel1))
+                            .addComponent(lblMontoPagarContado, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblTotalPagar, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(numPagonCon, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(18, 18, 18))
         );
         pnlContadoLayout.setVerticalGroup(
@@ -360,17 +325,15 @@ public class frmPagoFactura extends javax.swing.JDialog {
                 .addGroup(pnlContadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCambio)
                     .addComponent(lblSuCambio))
-                .addContainerGap(66, Short.MAX_VALUE))
+                .addContainerGap(98, Short.MAX_VALUE))
         );
 
         tabCancelarFactura.addTab("Contado", pnlContado);
 
         lblMontoPagarCredito.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        lblMontoPagarCredito.setForeground(new java.awt.Color(254, 254, 254));
         lblMontoPagarCredito.setText("0");
 
         lblTotalPagarCredito.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblTotalPagarCredito.setForeground(new java.awt.Color(254, 254, 254));
         lblTotalPagarCredito.setText("Total a pagar:");
 
         txtNumeroFacturaCredito.setEditable(false);
@@ -379,17 +342,14 @@ public class frmPagoFactura extends javax.swing.JDialog {
         txtNumeroFacturaCredito.setText("0");
 
         lblNumeroFacturaCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        lblNumeroFacturaCredito.setForeground(new java.awt.Color(254, 254, 254));
         lblNumeroFacturaCredito.setText("No. Factura:");
 
         lblNombreClienteCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        lblNombreClienteCredito.setForeground(new java.awt.Color(254, 254, 254));
         lblNombreClienteCredito.setText("Nombre:");
 
         txtNombreClienteCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
         lblCedulaClienteCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        lblCedulaClienteCredito.setForeground(new java.awt.Color(254, 254, 254));
         lblCedulaClienteCredito.setText("Cédula:");
 
         txtCedulaClienteCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -400,7 +360,6 @@ public class frmPagoFactura extends javax.swing.JDialog {
         txtLimiteCreditoCliente.setCaretPosition(0);
 
         lblLimiteCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        lblLimiteCredito.setForeground(new java.awt.Color(254, 254, 254));
         lblLimiteCredito.setText("Límite de crédito:");
 
         txtSaldoActualCredito.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -408,7 +367,6 @@ public class frmPagoFactura extends javax.swing.JDialog {
         txtSaldoActualCredito.setText("0");
 
         lblSaldoActual.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        lblSaldoActual.setForeground(new java.awt.Color(254, 254, 254));
         lblSaldoActual.setText("Saldo actual:");
 
         javax.swing.GroupLayout pnlCreditoLayout = new javax.swing.GroupLayout(pnlCredito);
@@ -416,7 +374,7 @@ public class frmPagoFactura extends javax.swing.JDialog {
         pnlCreditoLayout.setHorizontalGroup(
             pnlCreditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlCreditoLayout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
+                .addContainerGap(69, Short.MAX_VALUE)
                 .addGroup(pnlCreditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblNombreClienteCredito, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lblNumeroFacturaCredito, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -435,7 +393,7 @@ public class frmPagoFactura extends javax.swing.JDialog {
                             .addComponent(lblTotalPagarCredito))
                         .addGap(0, 62, Short.MAX_VALUE))
                     .addComponent(txtSaldoActualCredito))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
         pnlCreditoLayout.setVerticalGroup(
             pnlCreditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -464,17 +422,15 @@ public class frmPagoFactura extends javax.swing.JDialog {
                 .addGroup(pnlCreditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtSaldoActualCredito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblSaldoActual))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
         tabCancelarFactura.addTab("Crédito", pnlCredito);
 
         lblTotaPagarTarjeta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblTotaPagarTarjeta.setForeground(new java.awt.Color(254, 254, 254));
         lblTotaPagarTarjeta.setText("Total a pagar:");
 
         lblMontoPagarTarjeta.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        lblMontoPagarTarjeta.setForeground(new java.awt.Color(254, 254, 254));
         lblMontoPagarTarjeta.setText("0");
 
         javax.swing.GroupLayout panelShadow1Layout = new javax.swing.GroupLayout(panelShadow1);
@@ -482,7 +438,7 @@ public class frmPagoFactura extends javax.swing.JDialog {
         panelShadow1Layout.setHorizontalGroup(
             panelShadow1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelShadow1Layout.createSequentialGroup()
-                .addContainerGap(189, Short.MAX_VALUE)
+                .addContainerGap(264, Short.MAX_VALUE)
                 .addGroup(panelShadow1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblMontoPagarTarjeta)
                     .addComponent(lblTotaPagarTarjeta))
@@ -495,7 +451,7 @@ public class frmPagoFactura extends javax.swing.JDialog {
                 .addComponent(lblTotaPagarTarjeta)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblMontoPagarTarjeta)
-                .addContainerGap(215, Short.MAX_VALUE))
+                .addContainerGap(235, Short.MAX_VALUE))
         );
 
         tabCancelarFactura.addTab("Tarjeta", panelShadow1);
@@ -555,7 +511,6 @@ public class frmPagoFactura extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.edisoncor.gui.varios.TitleBar brtleBarraTitulo;
     private org.edisoncor.gui.button.ButtonSeven btnBuscarCliente;
     private org.edisoncor.gui.button.ButtonAction btnCancelar;
     private org.edisoncor.gui.button.ButtonAction btnCobrarImprimir;

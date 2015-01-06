@@ -5,6 +5,7 @@
  */
 package accesoDatos;
 
+import XmlD.Cliente;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +27,11 @@ public class ClientesD {
         error = false;
         errorMsg = "";
     }
-
-    public List<Inventario> consultarRegistro() {
+ public List<Inventario> filtrarCliente(String pFiltro, String pOpcion) {
 
         ArrayList registros = new ArrayList();
-        ResultSet rs = this.conexion.ejecutarConsultaSQL("SELECT * FROM Cliente_Credito");
+        //"SELECT * FROM Inventario WHERE Descripcion LIKE '%" + pFiltro + "'"
+        ResultSet rs = this.conexion.ejecutarConsultaSQL("SELECT * FROM CLIENTE WHERE " + pOpcion + " like '%" + pFiltro + "%'");
 
         if (this.conexion.isError()) {
             this.error = true;
@@ -40,18 +41,50 @@ public class ClientesD {
                 while (rs.next()) {
 
                     Clientes oCliente = new Clientes(
-                            rs.getInt(Integer.parseInt("Id_Cod_Cliente")),
-                            rs.getInt("Cedula"),
+                            rs.getInt("Id"),
+                            rs.getString("Cedula"),
                             rs.getString("Nombre"),
-                            rs.getString("Apellidos"),
                             rs.getString("Telefono"),
-                            rs.getString("Celular"),
                             rs.getString("Direccion"),
-                            rs.getString("Email"),
-                            rs.getString("Fax"),
-                            rs.getString("Observacion"),
-                            rs.getDouble("Limite_Credito"),
-                            rs.getDouble("Monto_Actual")
+                            rs.getString("Estado_Cliente_FK"),
+                            rs.getString("Fecha_Creacion"),
+                            rs.getString("Fecha_Modificacion"),
+                            rs.getInt("Modificado_Por"),
+                            rs.getShort("Creado_Por")
+                    );
+                    registros.add(oCliente);
+                }
+                rs.close();
+            } catch (Exception e) {
+                this.error = true;
+                this.errorMsg = e.getMessage();
+            }
+        }
+        return registros;
+    }
+    public List<Inventario> consultarRegistro() {
+
+        ArrayList registros = new ArrayList();
+        ResultSet rs = this.conexion.ejecutarConsultaSQL("SELECT * FROM CLIENTE");
+
+        if (this.conexion.isError()) {
+            this.error = true;
+            this.errorMsg = this.conexion.getErrorMsg();
+        } else {
+            try {
+                while (rs.next()) {
+                    Clientes oCliente = new Clientes(
+                            rs.getInt("Id"),
+                            rs.getString("Cedula"),
+                            rs.getString("Nombre"),
+                            rs.getString("Telefono"),
+                            rs.getString("Direccion"),
+                            rs.getString("Estado_Cliente_FK"),
+                            rs.getString("Tipo_Cliente_FK"),
+                            rs.getString("Fecha_Creacion"),
+                            rs.getString("Fecha_Modificacion"),
+                            rs.getString("Modificado_Por"),
+                            rs.getString("Creado_Por")
                     );
                     registros.add(oCliente);
                 }

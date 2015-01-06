@@ -30,7 +30,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.hyperic.sigar.OperatingSystem;
 import org.xml.sax.InputSource;
 
 /**
@@ -114,9 +113,9 @@ public class GuardarPendientes {
                         folder.mkdirs();
                     }
                     break;
-                case "Microsoft":
-                    folder = new File("C:\\Facturas pausadas");
-                    rutaPendientes = "C:\\Facturas pausadas\\";
+                case "Windows 7":
+                    folder = new File("C:\\Sistema Punto Venta\\Facturas pausadas");
+                    rutaPendientes = "C:\\Sistema Punto Venta\\Facturas pausadas\\";
                     if (!folder.exists()) {
                         folder.mkdirs();
                     }

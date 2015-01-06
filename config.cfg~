@@ -1,0 +1,7 @@
+#DataBase1
+Server=192.168.1.100
+Port=3306
+Base=Multicomercial
+User=Server
+Pass=42405659i
+Schema=

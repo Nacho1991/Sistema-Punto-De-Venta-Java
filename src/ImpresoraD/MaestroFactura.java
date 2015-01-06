@@ -6,7 +6,7 @@ package ImpresoraD;
 
 /**
  *
- * @author Rolando
+ * @author Ignacio
  */
 public class MaestroFactura {
 

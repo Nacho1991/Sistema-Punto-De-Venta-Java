@@ -2,32 +2,66 @@ package logica;
 
 public class Clientes {
 
+    //Variables para los datos del cliente
     private int codCliente;
-    private int cedula;
+    private String cedula;
     private String nombre;
-    private String apellidos;
     private String telefono;
-    private String celular;
     private String direccion;
-    private String email;
-    private String fax;
-    private String observacion;
+    private String estado;
+    private String tipoCliente;
+    private String fechaCreacion;
+    private String fechaModificacion;
+    private String creadoPor;
+    private String modificadoPor;
+    //Variables del credito
     private double limiteCredito;
     private double montoActual;
 
-    public Clientes(int pCodCliente, int pCedula, String pNombre, String pApellidos, String pTelefono, String pCelular,
-            String pDireccion, String pEmail, String pFax, String pObservacion, double pLimiteCredito,
-            double pMontoActual) {
-        codCliente = pCodCliente;
+    public Clientes(
+            int codCliente, 
+            String cedula, 
+            String nombre, 
+            String telefono, 
+            String direccion, 
+            String estado, 
+            String tipoCliente, 
+            String fechaCreacion, 
+            String fechaModificacion, 
+            String creadoPor, 
+            String modificadoPor) {
+        this.codCliente = codCliente;
+        this.cedula = cedula;
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.direccion = direccion;
+        this.estado = estado;
+        this.tipoCliente = tipoCliente;
+        this.fechaCreacion = fechaCreacion;
+        this.fechaModificacion = fechaModificacion;
+        this.creadoPor = creadoPor;
+        this.modificadoPor = modificadoPor;
+    }
+
+
+
+    public Clientes( 
+            int  pId,
+            String pCedula, 
+            String pNombre, 
+            String pTelefono,
+            String pDireccion, 
+            String pEmail, 
+            String pFax, 
+            String pObservacion, 
+            double pLimiteCredito,
+            double pMontoActual) 
+    {
+        codCliente=pId;
         cedula = pCedula;
         nombre = pNombre;
-        apellidos = pApellidos;
         telefono = pTelefono;
-        celular = pCelular;
         direccion = pDireccion;
-        email = pEmail;
-        fax = pFax;
-        observacion = pObservacion;
         limiteCredito = pLimiteCredito;
         montoActual = pMontoActual;
     }
@@ -40,11 +74,11 @@ public class Clientes {
         this.codCliente = codCliente;
     }
 
-    public int getCedula() {
+    public String getCedula() {
         return cedula;
     }
 
-    public void setCedula(int cedula) {
+    public void setCedula(String cedula) {
         this.cedula = cedula;
     }
 
@@ -56,13 +90,6 @@ public class Clientes {
         this.nombre = nombre;
     }
 
-    public String getApellidos() {
-        return apellidos;
-    }
-
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
-    }
 
     public String getTelefono() {
         return telefono;
@@ -70,14 +97,6 @@ public class Clientes {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
-    }
-
-    public String getCelular() {
-        return celular;
-    }
-
-    public void setCelular(String celular) {
-        this.celular = celular;
     }
 
     public String getDireccion() {
@@ -88,28 +107,52 @@ public class Clientes {
         this.direccion = direccion;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEstado() {
+        return estado;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
-    public String getFax() {
-        return fax;
+    public String getTipoCliente() {
+        return tipoCliente;
     }
 
-    public void setFax(String fax) {
-        this.fax = fax;
+    public void setTipoCliente(String tipoCliente) {
+        this.tipoCliente = tipoCliente;
     }
 
-    public String getObservacion() {
-        return observacion;
+    public String getFechaCreacion() {
+        return fechaCreacion;
     }
 
-    public void setObservacion(String observacion) {
-        this.observacion = observacion;
+    public void setFechaCreacion(String fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public String getFechaModificacion() {
+        return fechaModificacion;
+    }
+
+    public void setFechaModificacion(String fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
+    }
+
+    public String getCreadoPor() {
+        return creadoPor;
+    }
+
+    public void setCreadoPor(String creadoPor) {
+        this.creadoPor = creadoPor;
+    }
+
+    public String getModificadoPor() {
+        return modificadoPor;
+    }
+
+    public void setModificadoPor(String modificadoPor) {
+        this.modificadoPor = modificadoPor;
     }
 
     public double getLimiteCredito() {
