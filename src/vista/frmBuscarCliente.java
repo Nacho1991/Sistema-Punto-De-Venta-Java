@@ -5,10 +5,10 @@
  */
 package vista;
 
-import XmlD.Cliente;
 import accesoDatos.AccesoDatosMySql;
 import accesoDatos.ClientesD;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -171,33 +171,35 @@ public class frmBuscarCliente extends javax.swing.JDialog {
 
         pnlBackground = new org.edisoncor.gui.panel.PanelNice();
         pnlVisor = new org.edisoncor.gui.panel.PanelShadow();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        lblBuscarCliente = new javax.swing.JLabel();
+        lblOpcionesBusqueda = new javax.swing.JLabel();
         txtFiltroBusqueda = new javax.swing.JTextField();
         cmbOpcionesBusqueda = new javax.swing.JComboBox();
-        buttonColoredAction1 = new org.edisoncor.gui.button.ButtonColoredAction();
+        btnSeleccionar = new org.edisoncor.gui.button.ButtonColoredAction();
         pnlRegistrosCliente = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblaRegistroClientes = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Buscador de clientes");
+        setResizable(false);
 
-        pnlBackground.setBackground(new java.awt.Color(138, 138, 138));
+        pnlBackground.setBackground(new java.awt.Color(240, 240, 240));
 
-        jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(254, 254, 254));
-        jLabel1.setText("Buscar cliente:");
+        lblBuscarCliente.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
+        lblBuscarCliente.setText("Buscar cliente:");
 
-        jLabel2.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(254, 254, 254));
-        jLabel2.setText("Opciones de búsqueda:");
+        lblOpcionesBusqueda.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
+        lblOpcionesBusqueda.setText("Opciones de búsqueda:");
 
+        txtFiltroBusqueda.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
+
+        cmbOpcionesBusqueda.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
         cmbOpcionesBusqueda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Por cédula", "Por nombre", "Por código" }));
 
-        buttonColoredAction1.setText("Seleccionar");
+        btnSeleccionar.setText("Seleccionar");
+        btnSeleccionar.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
 
-        pnlRegistrosCliente.setBackground(new java.awt.Color(138, 138, 138));
         pnlRegistrosCliente.setBorder(javax.swing.BorderFactory.createTitledBorder("Registros de clientes"));
 
         tblaRegistroClientes.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -211,7 +213,7 @@ public class frmBuscarCliente extends javax.swing.JDialog {
         );
         pnlRegistrosClienteLayout.setVerticalGroup(
             pnlRegistrosClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout pnlVisorLayout = new javax.swing.GroupLayout(pnlVisor);
@@ -221,15 +223,15 @@ public class frmBuscarCliente extends javax.swing.JDialog {
             .addGroup(pnlVisorLayout.createSequentialGroup()
                 .addGap(55, 55, 55)
                 .addGroup(pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(lblBuscarCliente)
+                    .addComponent(lblOpcionesBusqueda))
+                .addGap(10, 10, 10)
                 .addGroup(pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtFiltroBusqueda)
-                    .addComponent(cmbOpcionesBusqueda, 0, 326, Short.MAX_VALUE))
+                    .addComponent(cmbOpcionesBusqueda, 0, 320, Short.MAX_VALUE)
+                    .addComponent(txtFiltroBusqueda))
                 .addGap(18, 18, 18)
-                .addComponent(buttonColoredAction1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(380, Short.MAX_VALUE))
+                .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(357, Short.MAX_VALUE))
             .addComponent(pnlRegistrosCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pnlVisorLayout.setVerticalGroup(
@@ -237,13 +239,13 @@ public class frmBuscarCliente extends javax.swing.JDialog {
             .addGroup(pnlVisorLayout.createSequentialGroup()
                 .addGap(37, 37, 37)
                 .addGroup(pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(lblBuscarCliente)
                     .addComponent(txtFiltroBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonColoredAction1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmbOpcionesBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(lblOpcionesBusqueda))
                 .addGap(33, 33, 33)
                 .addComponent(pnlRegistrosCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -265,11 +267,11 @@ public class frmBuscarCliente extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.edisoncor.gui.button.ButtonColoredAction buttonColoredAction1;
+    private org.edisoncor.gui.button.ButtonColoredAction btnSeleccionar;
     private javax.swing.JComboBox cmbOpcionesBusqueda;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblBuscarCliente;
+    private javax.swing.JLabel lblOpcionesBusqueda;
     private org.edisoncor.gui.panel.PanelNice pnlBackground;
     private javax.swing.JPanel pnlRegistrosCliente;
     private org.edisoncor.gui.panel.PanelShadow pnlVisor;

@@ -727,7 +727,8 @@ public class frmPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_lblEditarClientesMouseClicked
 
     private void lblAgregarClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAgregarClientesMouseClicked
-
+frmRegistrarCliente oRegistrar = new frmRegistrarCliente(this, rootPaneCheckingEnabled);
+oRegistrar.setVisible(true);
     }//GEN-LAST:event_lblAgregarClientesMouseClicked
 
     private void lblExportarRespaldoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblExportarRespaldoMouseClicked

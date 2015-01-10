@@ -139,6 +139,7 @@ public class frmPagoFactura extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Pago de factura");
+        setResizable(false);
 
         pnlBackground.setBackground(new java.awt.Color(240, 240, 240));
 

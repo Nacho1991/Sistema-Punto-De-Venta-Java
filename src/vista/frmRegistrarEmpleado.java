@@ -188,6 +188,7 @@ public class frmRegistrarEmpleado extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Registrar empleado");
+        setResizable(false);
 
         pnlDatosEmpleado.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos del empleado", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.ABOVE_TOP));
         pnlDatosEmpleado.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 12)); // NOI18N

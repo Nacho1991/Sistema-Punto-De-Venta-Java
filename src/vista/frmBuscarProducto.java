@@ -293,6 +293,7 @@ public class frmBuscarProducto extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Buscador de productos");
+        setResizable(false);
 
         pnlBackground.setBackground(new java.awt.Color(240, 240, 240));
         pnlBackground.setForeground(new java.awt.Color(0, 51, 255));
@@ -324,13 +325,11 @@ public class frmBuscarProducto extends javax.swing.JDialog {
         pnlRegistros.setLayout(pnlRegistrosLayout);
         pnlRegistrosLayout.setHorizontalGroup(
             pnlRegistrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 772, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
         );
         pnlRegistrosLayout.setVerticalGroup(
             pnlRegistrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlRegistrosLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
         );
 
         cmbOpcionesBusqueda.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 18)); // NOI18N
